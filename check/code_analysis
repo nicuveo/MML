@@ -1,0 +1,23 @@
+#! /usr/bin/env bash
+
+BIN="`which cppcheck 2> /dev/null`"
+
+if [ $? -ne 0 -o ! -x "$BIN" ] ; then
+    exit 1
+fi
+
+if [ $# -lt 2 ] ; then
+    echo "usage: $0 \"dir0 dir1 ... dirn\" \"ext0 ext1 ... extn\" options" >&2
+    exit 2
+fi
+
+
+DIRS=( $1 ) ; shift
+EXTS=( $1 ) ; shift
+OPTS=( $* )
+
+
+extsr=`printf "%s" "${EXTS[0]}" ; printf "\|%s" "${EXTS[@]:1}"`
+files=`find ${DIRS[@]} -type f \! -path ".*svn.*" -regex ".*\.\($extsr\)\$"`
+
+cppcheck --enable=all -q ${OPTS[@]} $files 2>&1

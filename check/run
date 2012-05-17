@@ -1,0 +1,74 @@
+#! /usr/bin/env bash
+
+
+CUR=`dirname $0`
+LOG=analysis.log
+
+
+if [ -t 1 ] ; then
+    R="\033[1;31m"
+    G="\033[1;32m"
+    Y="\033[1;33m"
+    B="\033[1;34m"
+    N="\033[0m"
+else
+    R=""
+    G=""
+    Y=""
+    B=""
+    N=""
+fi
+
+
+for t in $* ; do
+    printf "%-30s" "=== testing $t"
+    (cd $t && make > compil.out 2> compil.err)
+    if [ $? -ne 0 ] ; then
+        echo -e "[${Y}KO${N}]"
+    else
+        $t/test > $t/out 2> $t/err
+        if [ $? -ne 0 ] ; then
+            echo -e "[${R}KO${N}]"
+        else
+            echo -e "[${G}OK${N}]"
+        fi
+    fi
+done
+
+
+printf "%-30s" "=== running code analysis"
+./code_analysis "$CUR/../include/ $CUR/../src/" "cc hh hxx" "-I $CUR/../include/ -I $CUR/../src/" > $LOG
+
+if [ $? -ne 0 ] ; then
+    echo -e "[${B}NA${N}]"
+else
+    LINES=`wc -l < $LOG`
+    ERRORS=`grep "(error)" $LOG | wc -l`
+    WARNINGS=`grep "(warning)" $LOG | wc -l`
+    MISC=$(( $LINES - $ERRORS - $WARNINGS ))
+
+    if [ "$LINES" -eq 0 ] ; then
+        echo -e "[${G}OK${N}]"
+    else
+        str+=( "${ERRORS}" )
+        str+=( "${WARNINGS}" )
+        str+=( "${MISC}" )
+
+        if [ "$MISC" -ne 0 ] ; then
+            color="$G"
+            res="OK"
+        fi
+        if [ "$WARNINGS" -ne 0 ] ; then
+            color="$Y"
+            res="KO"
+        fi
+        if [ "$ERRORS" -ne 0 ] ; then
+            color="$R"
+            res="KO"
+        fi
+
+        txt="${str[0]}"
+        [ ${#str[@]} -gt 1 ] && txt="$txt"`printf ", %s" "${str[@]:1}"`
+        echo -e "[${color}${res}${N}: (${txt})]"
+    fi
+fi

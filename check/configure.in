@@ -1,0 +1,17 @@
+## configure.in
+## Made by nicuveo for mml
+
+TESTS += compil
+TESTS += point
+TESTS += line
+TESTS += rect
+TESTS += circle
+TESTS += polygon
+TESTS += empty
+TESTS += shape
+TESTS += contains
+TESTS += overlaps
+TESTS += grid
+TESTS += tiling
+TESTS += perlin
+TESTS += hash

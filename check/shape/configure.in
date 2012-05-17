@@ -1,0 +1,4 @@
+CFIL = test.cc
+CFLAGS = -I../../include -W -Wall -Wextra -Werror -ansi -pedantic -g3 -ggdb3
+LDFLAGS += -L../../bin/ -lmml
+LIBS = ../../bin/libmml.a

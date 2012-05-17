@@ -1,0 +1,8 @@
+Makefile.rules
+*.o
+*.d
+gmon.out
+test
+out
+err
+compil.*

@@ -1,0 +1,73 @@
+#! /bin/sh
+
+
+
+create_directory()
+{
+    mkdir "$1" > /dev/null
+}
+
+create_makefile()
+{
+    cat default/Makefile | sed "s/_test_subject_/$1/" > "$1/Makefile"
+}
+
+create_source()
+{
+    cat default/source | sed "s/_test_subject_/$1/" > "$1/test.cc"
+}
+
+create_conf()
+{
+    cat default/conf | sed "s/_test_subject_/$1/" > "$1/configure.in"
+}
+
+set_svc()
+{
+    svn add "$1" > /dev/null
+}
+
+set_props()
+{
+    svn propset svn:ignore "`cat default/ignore`" "$1" > /dev/null
+}
+
+add_test()
+{
+    echo "TESTS += $1" >> configure.in
+}
+
+
+
+print_res()
+{
+    if [ $1 ] ; then
+        echo -e "[\033[1;32mOK\033[0m]"
+    else
+        echo -e "[\033[1;31mKO\033[0m]"
+    fi
+
+    return $1
+}
+
+
+
+for t in $* ; do
+    if [ -d "$t" ] ; then
+        echo "=== $t already exists; overriding settings"
+        (echo -n "  > Makefile   " ; create_makefile "$t"  ; print_res $? ) &&
+        (echo -n "  > conf       " ; create_conf "$t"      ; print_res $? ) &&
+        (echo -n "  > svn props  " ; set_props "$t"        ; print_res $? )
+    elif [ -e "$t" ] ; then
+        echo "!!! $t isn't a valid directory"
+    else
+        echo "=== creating $t"
+        (echo -n "  > directory  " ; create_directory "$t" ; print_res $? ) &&
+        (echo -n "  > Makefile   " ; create_makefile "$t"  ; print_res $? ) &&
+        (echo -n "  > sources    " ; create_source "$t"    ; print_res $? ) &&
+        (echo -n "  > conf       " ; create_conf "$t"      ; print_res $? ) &&
+        (echo -n "  > svn add    " ; set_svc "$t"          ; print_res $? ) &&
+        (echo -n "  > svn props  " ; set_props "$t"        ; print_res $? ) &&
+        (echo -n "  > test list  " ; add_test "$t"         ; print_res $? )
+    fi
+done
