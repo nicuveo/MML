@@ -15,7 +15,7 @@ all: $(EXE)
 clean:
 	rm -f $(OBJS)
 
-distclean:
+distclean: clean
 	rm -f $(EXE) $(DEPS) Makefile.rules out err compil.out compil.err
 
 
