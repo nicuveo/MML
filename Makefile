@@ -35,7 +35,7 @@ CLEAN += '*~' '\#*' '.\#*' '.DS_Store' '.gdb_history' '*.stackdump' \
 all: $(TARGETS)
 
 install: all
-	if [ -x ./install ] ; then ./install ; else cp $(TARGETS) $(PREFIX) ; fi
+	if [ -x ./install ] ; then ./install "$(PREFIX)" ; else cp $(TARGETS) $(PREFIX) ; fi
 
 
 
