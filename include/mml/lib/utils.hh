@@ -11,8 +11,6 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Includes
 
-# include <cmath>
-# include <boost/mpl/logical.hpp>
 # include "mml/lib/misc.hh"
 # include "mml/lib/template.hh"
 # include "mml/lib/operators.hh"
@@ -66,14 +64,14 @@ namespace mml
   // type-aware modulo
 
   template <typename T1, typename T2>
-  inline MML_ENABLE_IF(MML_HAS(MML_MOD, T1, T2), MML_RESULT(MML_MOD, T1, T2))
+  inline MML_LAZY_ENABLE_IF(MML_HAS(MML_MOD, T1, T2), MML_RESULT_TRAIT(MML_MOD, T1, T2))
   mml_mod(T1 const& t1, T2 const& t2)
   {
     return t1 % t2;
   }
 
   template <typename T1, typename T2>
-  inline MML_ENABLE_IF(MML_HASNT(MML_MOD, T1, T2), BOOST_TYPEOF_TPL(std::fmod(T1(), T2())))
+  inline MML_LAZY_ENABLE_IF(MML_HASNT(MML_MOD, T1, T2), FmodResult<T1 BOOST_PP_COMMA() T2>)
   mml_mod(T1 const& t1, T2 const& t2)
   {
     return std::fmod(t1, t2);

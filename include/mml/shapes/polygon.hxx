@@ -47,7 +47,7 @@ namespace mml
 
         Real mx = 0;
         Real my = 0;
-        Real ratio = 1. / points.size();
+        Real ratio = 1. / static_cast<Real>(points.size());
 
         mml_foreach (ExactPoint& p, points_)
         {
@@ -63,6 +63,19 @@ namespace mml
       }
     }
 
+
+    template <typename T>
+    template <typename T2>
+    Polygon<T>::Polygon(const Polygon<T2>& p)
+    {
+      const typename Polygon<T2>::ExactPoints& ops = p.points_data();
+      ExactPoints nps;
+
+      mml_foreach (const typename Polygon<T2>::ExactPoint& op, ops)
+        nps.push_back(op);
+
+      new (this) Polygon(nps);
+    }
 
 
     // accessors

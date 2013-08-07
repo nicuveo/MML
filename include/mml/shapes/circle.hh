@@ -48,6 +48,9 @@ namespace mml
         Circle(PrmValueType cx, PrmValueType cy, PrmValueType radius) throw();
         Circle(const ExactPoint& center, PrmValueType radius) throw();
 
+        template <typename T2>
+        Circle(const Circle<T2>&);
+
 
         // accessors
 

@@ -50,6 +50,9 @@ namespace mml
         Line(const ExactPoint& p0, const ExactPoint& p1) throw();
         Line(PrmValueType x0, PrmValueType y0, PrmValueType x1, PrmValueType y1) throw();
 
+        template <typename T2>
+        Line(const Line<T2>&);
+
 
         // accessors
 

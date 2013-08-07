@@ -15,17 +15,31 @@ PROJ = mml
 
 # MAIN
 
-all:
-	./run $(TESTS)
+all: run analysis coverage
 
-$(TESTS):
-	./run $@
+run:
+	@./test run      $(TESTS)
+
+analysis:
+	@./test analyse  $(ANALYSE_OPTS) $(CFIL)
+
+coverage:
+	@./test coverage $(COVERAGE_OPTS) $(COVERAGE_OUT) $(TESTS)
+
+
+
+# CLEAN
 
 clean:
 	for e in $(TESTS) ; do (cd $$e && make clean) ; done
+	rm -Rfv analysis.log coverage.log test.log coverage.info $(COVERAGE_OUT)
 
 distclean:
-	rm -f Makefile.rules
 	for e in $(TESTS) ; do (cd $$e && make distclean) ; done
+	rm -f Makefile.rules default/Makefile.rules
+
+
+
+# SPECIALS
 
 .PHONY: $(TESTS)

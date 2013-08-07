@@ -26,6 +26,8 @@ BOOST_AUTO_TEST_CASE(decl)
   mml::Circle<mml::Real>  rc;
   mml::Point<mml::Num>    np;
   mml::Point<mml::Real>   rp;
+  mml::Line<mml::Num>     nl;
+  mml::Line<mml::Real>    rl;
   mml::Polygon<mml::Num>  nq;
   mml::Polygon<mml::Real> rq;
   mml::Rect<mml::Num>     nr;
@@ -37,6 +39,8 @@ BOOST_AUTO_TEST_CASE(decl)
             << "rc: " << rc << std::endl
             << "np: " << np << std::endl
             << "rp: " << rp << std::endl
+            << "nl: " << nl << std::endl
+            << "rl: " << rl << std::endl
             << "nq: " << nq << std::endl
             << "rq: " << rq << std::endl
             << "nr: " << nr << std::endl

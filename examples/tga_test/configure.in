@@ -1,7 +1,0 @@
-## configure.in
-## Made by nicuveo for mml
-
-CFIL = tga_test.cc ../lib/tools/bitmap.cc ../lib/tools/color.cc ../lib/tools/img/tga.cc
-CFLAGS += -I../../include -I../lib/ -I../lib/tools/
-LDFLAGS += -L../../bin/ -lmml
-LIBS = ../../bin/libmml.a

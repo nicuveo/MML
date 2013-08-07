@@ -22,6 +22,7 @@
 
 # define mml_foreach BOOST_FOREACH
 
+# define MML_LAZY_ENABLE_IF(C, T) typename boost::lazy_enable_if<C, T>::type
 # define MML_ENABLE_IF(C, T) typename boost::enable_if<C, T>::type
 # define MML_COMMA() BOOST_PP_COMMA()
 

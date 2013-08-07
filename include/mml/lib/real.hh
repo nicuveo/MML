@@ -12,8 +12,6 @@
 // Includes
 
 # include <boost/call_traits.hpp>
-# include <iostream>
-# include <iomanip>
 # include <limits>
 # include <cmath>
 
@@ -39,8 +37,13 @@ namespace tools
       Real& operator=(U const& r) { data_ = r; return *this; }
       Real& operator=(T r)        { data_ = r; return *this; }
 
-      operator T() const          { return data_; }
-      operator T&()               { return data_; }
+      operator T() const          { return data_;            }
+      operator T&()               { return data_;            }
+
+      T nearest() const;
+
+      Real& round();
+      Real  rounded() const;
 
       static const T epsilon;
 
@@ -67,6 +70,38 @@ namespace std
   class numeric_limits<tools::Real<T, P> > : public numeric_limits<T>
   {
   };
+
+}
+
+
+
+//HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+// Implementation
+
+namespace tools
+{
+
+  template <typename T, int P>
+  inline T
+  Real<T, P>::nearest() const
+  {
+    return epsilon * std::floor((data_ / epsilon) + T(1) / 2);
+  }
+
+  template <typename T, int P>
+  inline Real<T, P>&
+  Real<T, P>::round()
+  {
+    data_ = nearest();
+    return this;
+  }
+
+  template <typename T, int P>
+  inline Real<T, P>
+  Real<T, P>::rounded() const
+  {
+    return nearest();
+  }
 
 }
 

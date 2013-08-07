@@ -19,6 +19,8 @@
 /// \file include/mml/shapes/circle.hh
 /// \file include/mml/shapes/circle.hxx
 /// \file include/mml/shapes/empty.hh
+/// \file include/mml/shapes/hash.hh
+/// \file include/mml/shapes/hash.hxx
 /// \file include/mml/shapes.hh
 /// \file include/mml/shapes/line.hh
 /// \file include/mml/shapes/line.hxx

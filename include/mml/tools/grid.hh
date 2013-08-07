@@ -14,6 +14,7 @@
 # include <list>
 # include <vector>
 # include <boost/function.hpp>
+# include <boost/unordered_set.hpp>
 # include "mml/shapes.hh"
 
 

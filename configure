@@ -17,6 +17,7 @@ coptions=""
 loptions=""
 moptions=""
 folders=""
+tocheck=""
 os=`uname -s`
 cc="cc"
 
@@ -308,7 +309,7 @@ main()
 	echo "CFLAGS += $coptions" >> Makefile.rules
     fi
     if [ -n "$loptions" ] ; then
-	echo "LDFLAGS = $loptions \$(LDFLAGS)" >> Makefile.rules
+	echo "LDFLAGS := $loptions \$(LDFLAGS)" >> Makefile.rules
     fi
 
     echo "" >> Makefile.rules
@@ -316,7 +317,12 @@ main()
     echo "## meta-rules" >> Makefile.rules
 
     echo    ""                                    >> Makefile.rules
+    echo    "PROFILE = $profile"                  >> Makefile.rules
+    echo    "SUB_DIRS = $tocheck"                 >> Makefile.rules
+    echo    "BUILD_DIR = build/$profile"          >> Makefile.rules
     echo -n "CONFIGURE_ARGS ="                    >> Makefile.rules
+
+    mkdir -p build/$profile
 
     for arg in "$@" ; do
         echo -n " \"$arg\""                       >> Makefile.rules

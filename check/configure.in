@@ -1,17 +1,73 @@
 ## configure.in
 ## Made by nicuveo for mml
 
-TESTS += compil
-TESTS += point
-TESTS += line
-TESTS += rect
-TESTS += circle
-TESTS += polygon
-TESTS += empty
-TESTS += shape
-TESTS += contains
-TESTS += overlaps
-TESTS += grid
-TESTS += tiling
-TESTS += perlin
-TESTS += hash
+ANALYSE_OPTS = -o "-I ../include"
+COVERAGE_OPTS = -t mml -o "--no-branch-coverage"
+COVERAGE_OUT = ../doc/coverage
+
+TESTS =                                 \
+  compil                                \
+  point                                 \
+  line                                  \
+  rect                                  \
+  circle                                \
+  polygon                               \
+  empty                                 \
+  shape                                 \
+  contains                              \
+  overlaps                              \
+  grid                                  \
+  tiling                                \
+  perlin                                \
+  hash                                  \
+  tiling_ratios                         \
+
+CFIL = 					\
+  ../include/mml/algos/common.hh	\
+  ../include/mml/algos/common.hxx	\
+  ../include/mml/algos/contains.hh	\
+  ../include/mml/algos/contains.hxx	\
+  ../include/mml/algos.hh		\
+  ../include/mml/algos/overlaps.hh	\
+  ../include/mml/algos/overlaps.hxx	\
+  ../include/mml/constants.hh		\
+  ../include/mml/io.hh			\
+  ../include/mml/io/ostream.hh		\
+  ../include/mml/io/ostream.hxx		\
+  ../include/mml/lib/dual_iterator.hh	\
+  ../include/mml/lib/misc.hh		\
+  ../include/mml/lib/operators.hh	\
+  ../include/mml/lib/real.hh		\
+  ../include/mml/lib/template.hh	\
+  ../include/mml/lib/utils.hh		\
+  ../include/mml/mml.hh			\
+  ../include/mml/shapes/circle.hh	\
+  ../include/mml/shapes/circle.hxx	\
+  ../include/mml/shapes/empty.hh	\
+  ../include/mml/shapes/hash.hh		\
+  ../include/mml/shapes/hash.hxx	\
+  ../include/mml/shapes.hh		\
+  ../include/mml/shapes/line.hh		\
+  ../include/mml/shapes/line.hxx	\
+  ../include/mml/shapes/point.hh	\
+  ../include/mml/shapes/point.hxx	\
+  ../include/mml/shapes/polygon.hh	\
+  ../include/mml/shapes/polygon.hxx	\
+  ../include/mml/shapes/rect.hh		\
+  ../include/mml/shapes/rect.hxx	\
+  ../include/mml/shapes/shape_base.hh	\
+  ../include/mml/shapes/shape_base.hxx	\
+  ../include/mml/shapes/shape.hh	\
+  ../include/mml/shapes/shape.hxx	\
+  ../include/mml/shapes/shape_macros.hh	\
+  ../include/mml/shapes/shape_type.hh	\
+  ../include/mml/shapes/shape_union.hh	\
+  ../include/mml/shapes/shape_utils.hh	\
+  ../include/mml/tools/grid.hh		\
+  ../include/mml/tools/grid.hxx		\
+  ../include/mml/tools.hh		\
+  ../include/mml/tools/perlin.hh	\
+  ../include/mml/tools/perlin.hxx	\
+  ../include/mml/tools/tiling.hh	\
+  ../include/mml/tools/tiling.hxx	\
+  ../include/mml/types.hh               \

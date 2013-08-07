@@ -45,7 +45,7 @@ namespace mml
 
 
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-// Declarations
+// Implementation
 
 namespace mml
 {

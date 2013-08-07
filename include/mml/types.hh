@@ -85,7 +85,7 @@ namespace mml
 
   template <> inline Num to<Num, Real>(Real const& x)
   {
-    return Num(x < 0 ? std::ceil(x - 0.5) : std::floor(x + 0.5));
+    return Num(std::floor(0.5 + x));
   }
 
 # endif

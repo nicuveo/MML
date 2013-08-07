@@ -61,6 +61,9 @@ namespace mml
         Shape(const Shape& shape) throw();
         Shape() throw();
 
+        template <typename S>
+        Shape(const Shape<S>& shape);
+
 
         // creators
 

@@ -19,9 +19,14 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Local macros
 
-# define MMLM_equal(_1, _2, S)                          \
-  case shape::MMLM_NAME(S):                             \
-    return s1.MMLM_name(S)() == s2.MMLM_name(S)();      \
+# define MMLM_equal(_1, _2, S)                             \
+  case shape::MMLM_NAME(S):                                \
+    return s1.MMLM_name(S)() == s2.MMLM_name(S)();         \
+
+# define MMLM_assign(_1, _2, S)                            \
+  case shape::MMLM_NAME(S):                                \
+    data_ = MMLM_Name(S)<T>(shape.MMLM_name(S)());         \
+    break;                                                 \
 
 
 
@@ -54,6 +59,19 @@ namespace mml
     inline Shape<T>::Shape() throw()
       : data_(Empty<T>())
     {
+    }
+
+
+    template <typename T>
+    template <typename S>
+    inline Shape<T>::Shape(const Shape<S>& shape)
+      : data_(Empty<T>())
+    {
+      switch (shape.type())
+      {
+        case shape::EMPTY: break;
+        BOOST_PP_SEQ_FOR_EACH(MMLM_assign, _, MMLM_SHAPES)
+      }
     }
 
 
@@ -216,7 +234,7 @@ namespace mml
                      PrmValueType h_side, PrmReal angle)
     {
       // TODO debug::shape: check square size > 0
-      return reg_polygon(p, h_side, 4, angle + 3 * pi() / 4);
+      return reg_polygon(p, h_side, 4, angle + pi() / 4);
     }
 
 
@@ -640,6 +658,7 @@ namespace mml
 // Local macros undef
 
 # undef MMLM_equal
+# undef MMLM_assign
 
 
 

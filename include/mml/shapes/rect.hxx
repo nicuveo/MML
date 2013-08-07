@@ -46,6 +46,14 @@ namespace mml
 
 
     template <typename T>
+    template <typename T2>
+    Rect<T>::Rect(const Rect<T2>& r)
+      : min_(r.min()), max_(r.max())
+    {
+    }
+
+
+    template <typename T>
     inline Rect<T>
     Rect<T>::absolute(const ExactPoint& min, const ExactPoint& max)
     {
@@ -234,6 +242,98 @@ namespace mml
 
 
 
+    // modifiers
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::expanded(PrmValueType d) const
+    {
+      Rect<T> res = *this;
+      res.expand(d);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::expanded(PrmValueType dx, PrmValueType dy) const
+    {
+      Rect<T> res = *this;
+      res.expand(dx, dy);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::expanded(PrmValueType dl, PrmValueType dt, PrmValueType dr, PrmValueType db) const
+    {
+      Rect<T> res = *this;
+      res.expand(dl, dt, dr, db);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::expanded(const ExactPoint& d) const
+    {
+      Rect<T> res = *this;
+      res.expand(d);
+      return res;
+    }
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::expanded(const ExactRect& r) const
+    {
+      Rect<T> res = *this;
+      res.expand(r.x_min(), r.y_min(), r.x_max(), r.y_max());
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::shrinked(PrmValueType d) const
+    {
+      Rect<T> res = *this;
+      res.shrink(d);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::shrinked(PrmValueType dx, PrmValueType dy) const
+    {
+      Rect<T> res = *this;
+      res.shrink(dx, dy);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::shrinked(PrmValueType dl, PrmValueType dt, PrmValueType dr, PrmValueType db) const
+    {
+      Rect<T> res = *this;
+      res.shrink(dl, dt, dr, db);
+      return res;
+    }
+
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::shrinked(const ExactPoint& d) const
+    {
+      Rect<T> res = *this;
+      res.shrink(d);
+      return res;
+    }
+    template <typename T>
+    inline Rect<T>
+    Rect<T>::shrinked(const ExactRect& r) const
+    {
+      Rect<T> res = *this;
+      res.shrink(r.x_min(), r.y_min(), r.x_max(), r.y_max());
+      return res;
+    }
+
+
+
     // in-place modifiers
 
     template <typename T>
@@ -290,6 +390,79 @@ namespace mml
       const ExactPoint& c = center();
       min_ = (c + (min_ - c) * s);
       max_ = (c + (max_ - c) * s);
+    }
+
+
+    template <typename T>
+    inline void
+    Rect<T>::expand(PrmValueType d)
+    {
+      expand(d, d);
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::expand(PrmValueType dx, PrmValueType dy)
+    {
+      expand(ExactPoint(dx, dy));
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::expand(PrmValueType dl, PrmValueType dt, PrmValueType dr, PrmValueType db)
+    {
+      expand(ExactRect(dl, dt, dr, db));
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::expand(const ExactPoint& d)
+    {
+      min_ -= d;
+      max_ += d;
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::expand(const ExactRect& r)
+    {
+      min_ -= r.min();
+      max_ += r.max();
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::shrink(PrmValueType d)
+    {
+      expand(-d, -d);
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::shrink(PrmValueType dx, PrmValueType dy)
+    {
+      expand(-dx, -dy);
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::shrink(PrmValueType dl, PrmValueType dt, PrmValueType dr, PrmValueType db)
+    {
+      expand(-dl, -dt, -dr, -db);
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::shrink(const ExactPoint& d)
+    {
+      expand(-d);
+    }
+
+    template <typename T>
+    inline void
+    Rect<T>::shrink(const ExactRect& d)
+    {
+      expand(-d.min(), -d.max());
     }
 
 

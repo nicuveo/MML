@@ -5,7 +5,7 @@
 
 ## Configuration
 profile: release
-sub-dirs: build check examples
+sub-dirs: check tools
 prefix: /usr/local
 
 
@@ -15,9 +15,7 @@ CFLAGS	  = -W -Wall -Wextra -ansi -pedantic -I include -DMML_STATIC_CHECKING
 DFLAGS    = -O0 -g3 -ggdb3 -DDEBUG
 RFLAGS    = -O3 -DNDEBUG
 LDFLAGS   =
-LIBS      =
-LIBS_DIRS =
-TARGETS   = $(LIBA)
+TARGETS   =
 
 CFIL =
 

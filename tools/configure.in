@@ -1,0 +1,4 @@
+## configure.in
+## Made by nicuveo for mml
+
+TOOLS = intersect_test tga_test tiling_test tiling_debug

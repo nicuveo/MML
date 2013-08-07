@@ -28,9 +28,12 @@
       if (type c = cell(KeyPoint(x, y)))                \
 
 # define MML_GRID_FILTER(cell, test, todo)      \
-  mml_foreach (Value const& v, *cell)           \
+  mml_foreach (Value const& value, *cell)       \
   if (test)                                     \
-    todo(&v);
+  {                                             \
+    todo;                                       \
+  }                                             \
+
 
 # define MML_GRID_FOR(tt, shape)       MML_GRID_FOR_INTERNAL(tt, shape, Cell*)
 # define MML_GRID_CONST_FOR(tt, shape) MML_GRID_FOR_INTERNAL(tt, shape, const Cell*)
@@ -89,7 +92,7 @@ namespace mml
   {
     if (const Cell* c = cell(pos(p)))
     {
-      MML_GRID_FILTER(c, contains(shape_(v), p), return);
+      MML_GRID_FILTER(c, contains(shape_(value), p), return &value);
     }
     return 0;
   }
@@ -101,7 +104,7 @@ namespace mml
   {
     MML_GRID_CONST_FOR(T2, s)
     {
-      MML_GRID_FILTER(c, overlaps(shape_(v), s), return);
+      MML_GRID_FILTER(c, overlaps(shape_(value), s), return &value);
     }
     return 0;
   }
@@ -115,7 +118,7 @@ namespace mml
     std::vector<iterator> res;
     if (Cell* c = cell(pos(p)))
     {
-      MML_GRID_FILTER(c, contains(shape_(v), p), res.push_back);
+      MML_GRID_FILTER(c, contains(shape_(value), p), res.push_back(&value));
     }
     return res;
   }
@@ -125,10 +128,12 @@ namespace mml
   std::vector<typename Grid<S, T, F>::iterator>
   Grid<S, T, F>::find_all(const Shape<T2>& s) const
   {
+    boost::unordered_set<Value> visited;
+
     std::vector<iterator> res;
     MML_GRID_CONST_FOR(T2, s)
     {
-      MML_GRID_FILTER(c, overlaps(shape_(v), s), res.push_back);
+      MML_GRID_FILTER(c, visited.find(value) == visited.end() and overlaps(shape_(value), s), visited.insert(value); res.push_back(&value));
     }
     return res;
   }

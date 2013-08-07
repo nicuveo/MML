@@ -20,18 +20,20 @@
 
 # define MMLM_case_links(_1, _2, S)                                    \
   case tiling::MML_TILING_NAME(S):                                     \
-    BOOST_PP_CAT(MML_TILING_name(S), _links)(links, index);            \
+    BOOST_PP_CAT(MML_TILING_name(S), _links)(rmap, index, links);      \
     break;
 
 # define MMLM_case_dv(_1, F, S)                                        \
   case tiling::MML_TILING_NAME(S):                                     \
-    F = BOOST_PP_CAT(MML_TILING_name(S), _dv)();                       \
+    F = to<E1Value>(BOOST_PP_CAT(MML_TILING_name(S), _dv)());          \
     break;
 
 # define MMLM_case_pattern(_1, _2, S)                                  \
   case tiling::MML_TILING_NAME(S):                                     \
     BOOST_PP_CAT(BOOST_PP_CAT(init_, MML_TILING_name(S)), _pattern)(); \
     break;
+
+# define MMLM_ratio(A, B) (A) / (A + B)
 
 
 
@@ -41,20 +43,76 @@
 namespace mml
 {
 
+  namespace tiling
+  {
+
+
+    inline Real ratio(Num p1, Num p2)
+    {
+      if (p2 > p1)
+        return 1. - ratio(p2, p1);
+
+      switch (p1 * 100 + p2)
+      {
+        case  303: return 0.50;                                       //  triangle ->  triangle
+        case  403: return MMLM_ratio(3., root_3());                   //    square ->  triangle
+        case  404: return 0.50;                                       //    square ->    square
+        case  603: return 0.75;                                       //   hexagon ->  triangle
+        case  604: return MMLM_ratio(root_3(), 1.);                   //   hexagon ->    square
+        case  606: return 0.50;                                       //   hexagon ->   hexagon
+        case  803: return MMLM_ratio(3. * (1. + root_2()), root_3()); //   octagon ->  triangle
+        case  804: return MMLM_ratio(1. + root_2(), 1.);              //   octagon ->    square
+        case  806: return MMLM_ratio(1. + root_2(), root_3());        //   octagon ->   hexagon
+        case  808: return 0.50;                                       //   octagon ->   octagon
+        case 1203: return MMLM_ratio(3. * (2. + root_3()), root_3()); // dodecagon ->  triangle
+        case 1204: return MMLM_ratio(2. + root_3(), 1.);              // dodecagon ->    square
+        case 1206: return MMLM_ratio(2. + root_3(), root_3());        // dodecagon ->   hexagon
+        case 1208: return MMLM_ratio(2. + root_3(), root_2() + 1.);   // dodecagon ->   octagon
+        case 1212: return 0.5;                                        // dodecagon -> dodecagon
+      }
+
+      // FIXME
+      assert(not "reached");
+
+      return 0. / 0.;
+    }
+
+
+  }
+
+
 
   // internal iterator type
 
   template <typename T1, typename T2, typename I>
   inline Tessellation<T1, T2, I>::iterator::iterator()
-    : index_(0), tess_(0)
+    : index_(0, 0), tess_(0)
   {
   }
 
   template <typename T1, typename T2, typename I>
   inline Tessellation<T1, T2, I>::iterator::iterator(const Tessellation* t, IndexPrm i, bool l, bool s)
-    : get_l_(l), strict_(s), index_(i), tess_(t)
+    : get_l_(l), strict_(s), index_(i, i), tess_(t)
   {
-    compute();
+  }
+
+  template <typename T1, typename T2, typename I>
+  typename Tessellation<T1, T2, I>::iterator
+  Tessellation<T1, T2, I>::iterator::begin(const Tessellation* t, bool l, bool s)
+  {
+    iterator res(t, 0, l, s);
+
+    res.index_map_.reset(new IndexMap());
+    res.compute();
+
+    return res;
+  }
+
+  template <typename T1, typename T2, typename I>
+  typename Tessellation<T1, T2, I>::iterator
+  Tessellation<T1, T2, I>::iterator::end(const Tessellation* t, IndexPrm max)
+  {
+    return iterator(t, max, false, false);
   }
 
 
@@ -62,11 +120,11 @@ namespace mml
   inline typename Tessellation<T1, T2, I>::IndexType
   Tessellation<T1, T2, I>::iterator::index() const
   {
-    return index_;
+    return index_.first;
   }
 
   template <typename T1, typename T2, typename I>
-  inline const std::vector<typename Tessellation<T1, T2, I>::IndexType>&
+  inline const typename Tessellation<T1, T2, I>::Links&
   Tessellation<T1, T2, I>::iterator::links() const
   {
     return links_;
@@ -84,14 +142,15 @@ namespace mml
   inline bool
   Tessellation<T1, T2, I>::iterator::equal(const iterator& si) const
   {
-    return tess_ == si.tess_ and index_ == si.index_;
+    return tess_ == si.tess_ and index_.second == si.index_.second;
   }
 
   template <typename T1, typename T2, typename I>
   inline void
   Tessellation<T1, T2, I>::iterator::increment()
   {
-    index_ += 1;
+    index_.first  += 1;
+    index_.second += 1;
     compute();
   }
 
@@ -99,7 +158,9 @@ namespace mml
   inline void
   Tessellation<T1, T2, I>::iterator::compute()
   {
-    current_ = tess_->get(index_, (get_l_ ? &links_ : 0), strict_);
+    current_ = tess_->get(index_map_, index_.second, (get_l_ ? &links_ : 0), strict_);
+    if (index_map_)
+      (*index_map_)[index_.second] = index_.first;
   }
 
 
@@ -117,9 +178,9 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   Tessellation<T1, T2, I>::Tessellation(TilingType t, const E2Shape& s,
-                                        E1Prm size_x, E1Prm size_y, PrmReal a)
+                                        const E1Vector& size, PrmReal a)
     : type_(t), bound_box_(s.bounding_rect()), bounds_(s),
-      size_x_(size_x), size_y_(size_y), angle_(a), center_(0, 0)
+      size_x_(size.x()), size_y_(size.y()), angle_(a), center_(0, 0)
   {
     init();
   }
@@ -135,9 +196,9 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   Tessellation<T1, T2, I>::Tessellation(TilingType t, const E2Shape& s,
-                                        E1Prm ox, E1Prm oy, E1Prm size_x, E1Prm size_y, PrmReal a)
+                                        E1Prm ox, E1Prm oy, const E1Vector& size, PrmReal a)
     : type_(t), bound_box_(s.bounding_rect()), bounds_(s),
-      size_x_(size_x), size_y_(size_y), angle_(a), center_(ox, oy)
+      size_x_(size.x()), size_y_(size.y()), angle_(a), center_(ox, oy)
   {
     init();
   }
@@ -153,9 +214,9 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   Tessellation<T1, T2, I>::Tessellation(TilingType t, const E2Shape& s,
-                                        const E1Point& offset, E1Prm size_x, E1Prm size_y, PrmReal a)
+                                        const E1Point& offset, const E1Vector& size, PrmReal a)
     : type_(t), bound_box_(s.bounding_rect()), bounds_(s),
-      size_x_(size_x), size_y_(size_y), angle_(a), center_(offset)
+      size_x_(size.x()), size_y_(size.y()), angle_(a), center_(offset)
   {
     init();
   }
@@ -229,14 +290,14 @@ namespace mml
   inline typename Tessellation<T1, T2, I>::iterator
   Tessellation<T1, T2, I>::begin(bool s, bool l) const
   {
-    return iterator(this, 0, l, s);
+    return iterator::begin(this, l, s);
   }
 
   template <typename T1, typename T2, typename I>
   inline typename Tessellation<T1, T2, I>::iterator
   Tessellation<T1, T2, I>::end() const
   {
-    return iterator(this, max_, false, false);
+    return iterator::end(this, max_);
   }
 
 
@@ -244,11 +305,15 @@ namespace mml
   // internal helper types
 
   template <typename T1, typename T2, typename I>
-  inline void
-  Tessellation<T1, T2, I>::push(std::vector<IndexType>* v, IndexType index, IndexType delta)
+  void
+  Tessellation<T1, T2, I>::push(IndexMapPrm imap, IndexPrm index, Links* v, IndexType delta, Real d)
   {
     if (ge(index, delta))
-      v->push_back(index - delta);
+    {
+      typename IndexMap::const_iterator it = imap.find(index - delta);
+      if (it != imap.end())
+        v->push_back(std::make_pair(it->second, d));
+    }
   }
 
   template <typename T1, typename T2, typename I>
@@ -286,7 +351,7 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   inline typename Tessellation<T1, T2, I>::E1Shape
-  Tessellation<T1, T2, I>::get(IndexRef index, std::vector<IndexType>* links, bool strict) const
+  Tessellation<T1, T2, I>::get(IndexMapPtr imap, IndexRef index, Links* links, bool strict) const
   {
     while (index < max_)
     {
@@ -301,6 +366,10 @@ namespace mml
       {
         if (links)
         {
+          // FIXME
+          assert(imap);
+          IndexMapPrm rmap = *imap;
+
           links->clear();
           switch (type_)
           {
@@ -322,111 +391,112 @@ namespace mml
   // dv computation
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::triangular_dv() const
   {
-    return to<E1Value>(size_x_ * root_3());
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::square_dv() const
   {
     return size_x_;
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::hexagonal_dv() const
   {
-    return to<E1Value>(size_x_ * root_3_div_3());
+    return size_x_ * root_3_div_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::snub_hexagonal_dv() const
   {
-    return size_x_ * 2;
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::reflected_snub_hexagonal_dv() const
   {
-    return size_x_ * 2;
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::tri_hexagonal_dv() const
   {
-    return to<E1Value>(size_x_ * root_3());
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::elongated_triangular_dv() const
   {
-    return to<E1Value>(size_x_ * (2 + root_3()));
+    return size_x_ * (2. + root_3());
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::snub_square_dv() const
   {
     return size_x_;
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::rhombitrihexagonal_dv() const
   {
-    return to<E1Value>(size_x_ * root_3());
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::truncated_square_dv() const
   {
     return size_x_;
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::truncated_hexagonal_dv() const
   {
-    return to<E1Value>(size_x_ * root_3());
+    return size_x_ * root_3();
   }
 
   template <typename T1, typename T2, typename I>
-  inline typename Tessellation<T1, T2, I>::E1Value
+  inline Real
   Tessellation<T1, T2, I>::truncated_trihexagonal_dv() const
   {
-    return to<E1Value>(size_x_ * root_3_div_3());
+    return size_x_ * root_3_div_3();
   }
 
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::triangular_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::triangular_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType pi = (index % pattern_.size());
+    Real d = triangular_dv() / 3.;
 
     switch (pi)
     {
       case 0:
-        push(v, index, pattern_.size() * steps_x_ - 3);
-        push(v, index, 3);
+        push(imap, index, v, pattern_.size() * steps_x_ - 3, d);
+        push(imap, index, v, 3,                              d);
         break;
       case 1:
-        push(v, index, 1);
+        push(imap, index, v, 1,                              d);
         break;
       case 2:
-        push(v, index, 1);
+        push(imap, index, v, 1,                              d);
         break;
       case 3:
-        push(v, index, 1);
-        push(v, index, 5);
+        push(imap, index, v, 1,                              d);
+        push(imap, index, v, 5,                              d);
         break;
       default:
         assert(false); // FIXME
@@ -435,29 +505,30 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::square_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::square_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
-    push(v, index, 1);
-    push(v, index, steps_x_);
+    push(imap, index, v, 1,        size_x_);
+    push(imap, index, v, steps_x_, size_x_);
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::hexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::hexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType pi = (index % pattern_.size());
+    Real d = hexagonal_dv();
 
     switch (pi)
     {
       case 0:
-        push(v, index, 1);
-        push(v, index, pattern_.size() * steps_x_);
-        push(v, index, pattern_.size() * steps_x_ - 1);
-        push(v, index, pattern_.size() * steps_x_ + 1);
+        push(imap, index, v, 1,                              d);
+        push(imap, index, v, pattern_.size() * steps_x_,     d);
+        push(imap, index, v, pattern_.size() * steps_x_ - 1, d);
+        push(imap, index, v, pattern_.size() * steps_x_ + 1, d);
         break;
       case 1:
-        push(v, index, 1);
-        push(v, index, pattern_.size() * steps_x_);
+        push(imap, index, v, 1,                              d);
+        push(imap, index, v, pattern_.size() * steps_x_,     d);
         break;
       default:
         assert(false); // FIXME
@@ -466,11 +537,14 @@ namespace mml
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::snub_hexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::snub_hexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n  = pattern_.size();
     IndexType i1 = (index % n) / 9;
     IndexType i2 = (index % n) % 9;
+
+    Real hex_d = snub_hexagonal_dv() * (2. / 21.);
+    Real tri_d = snub_hexagonal_dv() * (1. / 21.);
 
     switch (i2)
     {
@@ -478,17 +552,17 @@ namespace mml
         switch (i1)
         {
           case  0:
-            push(v, index, n * steps_x_ + 2);
+            push(imap, index, v, n * steps_x_ + 2, hex_d);
             break;
           case  2:
           case  5:
           case  8:
           case 11:
-            push(v, index, n + 2);
-            push(v, index, n - 22);
+            push(imap, index, v, n + 2,            hex_d);
+            push(imap, index, v, n - 22,           hex_d);
             break;
           default:
-            push(v, index, 2);
+            push(imap, index, v, 2,                hex_d);
             break;
         }
         break;
@@ -497,59 +571,59 @@ namespace mml
         switch (i1)
         {
           case 0:
-            push(v, index, n * steps_x_ + 4);
-            push(v, index, n * (steps_x_ - 1) + 28);
+            push(imap, index, v, n *  steps_x_      +  4, tri_d);
+            push(imap, index, v, n * (steps_x_ - 1) + 28, hex_d);
             break;
           case 1:
-            push(v, index, 4);
-            push(v, index, n * (steps_x_ - 1) + 28);
+            push(imap, index, v,                       4, tri_d);
+            push(imap, index, v, n * (steps_x_ - 1) + 28, hex_d);
             break;
           case  2:
-            push(v, index, n + 4);
-            push(v, index, n * steps_x_ + 28);
+            push(imap, index, v, n                  +  4, tri_d);
+            push(imap, index, v, n *  steps_x_      + 28, hex_d);
             break;
           case  5:
           case  8:
           case 11:
-            push(v, index, n + 4);
-            push(v, index, 28);
+            push(imap, index, v, n                  + 4, tri_d);
+            push(imap, index, v,                     28, hex_d);
             break;
           default:
-            push(v, index, 4);
-            push(v, index, 28);
+            push(imap, index, v,                      4, tri_d);
+            push(imap, index, v,                     28, hex_d);
             break;
         }
         break;
 
       case 2:
-        push(v, index, 1);
-        push(v, index, 2);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 2, hex_d);
         break;
 
       case 3:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  0:
           case  1:
-            push(v, index, n * (steps_x_ - 1) + 22);
+            push(imap, index, v, n * (steps_x_ - 1) + 22, tri_d);
             break;
           case  2:
-            push(v, index, n * steps_x_ + 22);
+            push(imap, index, v, n * steps_x_ + 22, tri_d);
             break;
           default:
-            push(v, index, 22);
+            push(imap, index, v, 22, tri_d);
             break;
         }
         break;
 
       case 4:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  0:
           case  1:
-            push(v, index, n * (steps_x_ - 1) + 22);
+            push(imap, index, v, n * (steps_x_ - 1) + 22, hex_d);
             break;
           case  4:
           case  7:
@@ -557,35 +631,38 @@ namespace mml
           case 13:
             break;
           default:
-            push(v, index, 22);
+            push(imap, index, v, 22, hex_d);
             break;
         }
         break;
 
       case 5:
-        push(v, index, 1);
-        push(v, index, 5);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 5, hex_d);
         break;
 
       case 6:
       case 7:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         break;
 
       case 8:
-        push(v, index, 1);
-        push(v, index, 8);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 8, hex_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::reflected_snub_hexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::reflected_snub_hexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n  = pattern_.size();
     IndexType i1 = (index % n) / 9;
     IndexType i2 = (index % n) % 9;
+
+    Real hex_d = snub_hexagonal_dv() * (2. / 21.);
+    Real tri_d = snub_hexagonal_dv() * (1. / 21.);
 
     switch (i2)
     {
@@ -593,7 +670,7 @@ namespace mml
         switch (i1)
         {
           case  0:
-            push(v, index, n * (steps_x_ - 2) + 2);
+            push(imap, index, v, n * (steps_x_ - 2) + 2, hex_d);
             break;
           case  2:
           case  5:
@@ -601,7 +678,7 @@ namespace mml
           case 11:
             break;
           default:
-            push(v, index, 2);
+            push(imap, index, v, 2, hex_d);
             break;
         }
         break;
@@ -610,407 +687,429 @@ namespace mml
         switch (i1)
         {
           case 0:
-            push(v, index, n * (steps_x_ - 2) + 4);
-            push(v, index, n * (steps_x_ - 1) + 28);
+            push(imap, index, v, n * (steps_x_ - 2) +  4, tri_d);
+            push(imap, index, v, n * (steps_x_ - 1) + 28, hex_d);
             break;
           case 1:
-            push(v, index, 4);
-            push(v, index, n * (steps_x_ - 1) + 28);
+            push(imap, index, v,                       4, tri_d);
+            push(imap, index, v, n * (steps_x_ - 1) + 28, hex_d);
             break;
           case  2:
-            push(v, index, n * (steps_x_ - 2) + 28);
+            push(imap, index, v, n * (steps_x_ - 2) + 28, hex_d);
             break;
           case  5:
           case  8:
           case 11:
-            push(v, index, 28);
+            push(imap, index, v,                      28, hex_d);
             break;
           default:
-            push(v, index, 4);
-            push(v, index, 28);
+            push(imap, index, v,                       4, tri_d);
+            push(imap, index, v,                      28, hex_d);
             break;
         }
         break;
 
       case 2:
-        push(v, index, 1);
-        push(v, index, 2);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 2, hex_d);
         break;
 
       case 3:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  0:
           case  1:
-            push(v, index, n * (steps_x_ - 1) + 22);
+            push(imap, index, v, n * (steps_x_ - 1) + 22, tri_d);
             break;
           case  2:
-            push(v, index, n * (steps_x_ - 2) + 22);
+            push(imap, index, v, n * (steps_x_ - 2) + 22, tri_d);
             break;
           default:
-            push(v, index, 22);
+            push(imap, index, v, 22, tri_d);
             break;
         }
         break;
 
       case 4:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  0:
           case  1:
-            push(v, index, n * (steps_x_ - 1) + 22);
+            push(imap, index, v, n * (steps_x_ - 1) + 22, hex_d);
             break;
           case  4:
           case  7:
           case 10:
           case 13:
-            push(v, index, n + 22);
+            push(imap, index, v, n + 22, hex_d);
             break;
           default:
-            push(v, index, 22);
+            push(imap, index, v, 22, hex_d);
             break;
         }
         break;
 
       case 5:
-        push(v, index, 1);
-        push(v, index, 5);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 5, hex_d);
         break;
 
       case 6:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  1:
           case  4:
           case  7:
           case 10:
-            push(v, index, n - 4);
+            push(imap, index, v, n - 4, tri_d);
             break;
         }
         break;
 
       case 7:
-        push(v, index, 1);
+        push(imap, index, v, 1, tri_d);
         switch (i1)
         {
           case  1:
           case  4:
           case  7:
           case 10:
-            push(v, index, n - 2);
+            push(imap, index, v, n - 2, hex_d);
             break;
         }
         break;
 
       case  8:
-        push(v, index, 1);
-        push(v, index, 8);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 8, hex_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::tri_hexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::tri_hexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
+
+    Real d = tri_hexagonal_dv() / 3.;
 
     switch (i)
     {
       case 0:
-        push(v, index, n * steps_x_ + 1);
-        push(v, index, 2);
+        push(imap, index, v, n * steps_x_ + 1, d);
+        push(imap, index, v, 2,                d);
       case 1:
-        push(v, index, 3 - i);
-        push(v, index, 4 - i);
+        push(imap, index, v, 3 - i,            d);
+        push(imap, index, v, 4 - i,            d);
         break;
       case 2:
-        push(v, index, n * steps_x_ + 1);
-        push(v, index, 2);
+        push(imap, index, v, n * steps_x_ + 1, d);
+        push(imap, index, v, 2,                d);
         break;
       case 3:
-        push(v, index, 2);
-        push(v, index, 3);
+        push(imap, index, v, 2,                d);
+        push(imap, index, v, 3,                d);
         break;
       case 4:
       case 5:
-        push(v, index, i - 1);
+        push(imap, index, v, i - 1,            d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::elongated_triangular_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::elongated_triangular_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
+
+    Real sqa_d = size_x_;
+    Real tri_d = triangular_dv() / 3.;
+    Real mix_d = size_x_ * ((root_3_div_3() + 1.) / 2.);
 
     switch (i)
     {
       case 0:
-        push(v, index, n * steps_x_ - 4);
+        push(imap, index, v, n * steps_x_ - 4, mix_d);
       case 1:
-        push(v, index, n);
+        push(imap, index, v, n, sqa_d);
         break;
       case 2:
-        push(v, index, 2);
+        push(imap, index, v, 2, mix_d);
       case 4:
-        push(v, index, n - 1);
+        push(imap, index, v, n - 1, tri_d);
         break;
       case 3:
-        push(v, index, 1);
-        push(v, index, 2);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 2, mix_d);
         break;
       case 5:
-        push(v, index, 1);
-        push(v, index, 4);
+        push(imap, index, v, 1, tri_d);
+        push(imap, index, v, 4, mix_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::snub_square_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::snub_square_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
+
+    Real tri_d = size_x_ * ( root_3_div_3()      /      (root_3() + 1.) );
+    Real mix_d = size_x_ * ((root_3_div_3() + 1) / (2 * (root_3() + 1.)));
 
     switch (i)
     {
       case  0:
-        push(v, index, n * steps_x_ - 11);
+        push(imap, index, v, n * steps_x_ - 11, mix_d);
         break;
       case  1:
-        push(v, index, 1);
-        push(v, index, 7);
-        push(v, index, 8 + n * steps_x_);
+        push(imap, index, v, 1,                 mix_d);
+        push(imap, index, v, 7,                 mix_d);
+        push(imap, index, v, 8 + n * steps_x_,  tri_d);
         break;
       case  4:
-        push(v, index, 1);
-        push(v, index, 2);
+        push(imap, index, v, 1,                 mix_d);
+        push(imap, index, v, 2,                 tri_d);
         break;
       case  6:
-        push(v, index, 4);
+        push(imap, index, v, 4,                 mix_d);
         break;
       case  7:
-        push(v, index, 1);
-        push(v, index, n * steps_x_ - 4);
-        push(v, index, n * steps_x_ + 4);
+        push(imap, index, v, 1,                 mix_d);
+        push(imap, index, v, n * steps_x_ - 4,  tri_d);
+        push(imap, index, v, n * steps_x_ + 4,  mix_d);
         break;
       case  8:
-        push(v, index, 2);
-        push(v, index, 5);
+        push(imap, index, v, 2,                 mix_d);
+        push(imap, index, v, 5,                 mix_d);
         break;
       case  9:
-        push(v, index, 5);
-        push(v, index, 16);
+        push(imap, index, v, 5,                 mix_d);
+        push(imap, index, v, 16,                mix_d);
         break;
       case 10:
-        push(v, index, 1);
-        push(v, index, 10);
-        push(v, index, 14);
+        push(imap, index, v, 1,                 mix_d);
+        push(imap, index, v, 10,                mix_d);
+        push(imap, index, v, 14,                tri_d);
         break;
 
       case  2:
       case  5:
       case 11:
-        push(v, index, 2);
+        push(imap, index, v, 2, mix_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::rhombitrihexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::rhombitrihexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
 
+    Real hex_d = size_x_ / 2.;
+    Real tri_d = rhombitrihexagonal_dv() / 6.;
+
     switch (i)
     {
       case  0:
-        push(v, index, 9);
-        push(v, index, 7);
-        push(v, index, 5 + n * steps_x_);
+        push(imap, index, v, 9,                hex_d);
+        push(imap, index, v, 7,                hex_d);
+        push(imap, index, v, 5 + n * steps_x_, hex_d);
         break;
       case  1:
-        push(v, index, 7);
+        push(imap, index, v, 7,                hex_d);
         break;
       case  2:
-        push(v, index, 2);
-        push(v, index, 1 + n * steps_x_);
-        push(v, index, 3 + n * steps_x_);
+        push(imap, index, v, 2,                hex_d);
+        push(imap, index, v, 1 + n * steps_x_, hex_d);
+        push(imap, index, v, 3 + n * steps_x_, tri_d);
         break;
       case  3:
-        push(v, index, 3);
+        push(imap, index, v, 3,                hex_d);
         break;
       case  4:
-        push(v, index, 3);
-        push(v, index, 4);
-        push(v, index, 6);
+        push(imap, index, v, 3,                hex_d);
+        push(imap, index, v, 4,                hex_d);
+        push(imap, index, v, 6,                tri_d);
         break;
       case  5:
       case  6:
       case  7:
-        push(v, index, i - 1);
+        push(imap, index, v, i - 1,            hex_d);
         break;
       case  8:
-        push(v, index, 6);
-        push(v, index, 5);
-        push(v, index, 1 + n * steps_x_);
+        push(imap, index, v, 6,                tri_d);
+        push(imap, index, v, 5,                tri_d);
+        push(imap, index, v, 1 + n * steps_x_, tri_d);
         break;
       case  9:
-        push(v, index, 6);
+        push(imap, index, v, 6,                tri_d);
       case 10:
       case 11:
-        push(v, index, 4);
-        push(v, index, 5);
+        push(imap, index, v, 4,                tri_d);
+        push(imap, index, v, 5,                tri_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::truncated_square_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::truncated_square_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
 
-    push(v, index, 2);
+    Real mix_d = size_x_ / 2.;
+    Real oct_d = mix_d * root_2();
+
+    push(imap, index, v, 2, mix_d);
     switch (i)
     {
       case 0:
-        push(v, index, 1);
-        push(v, index, 3);
-        push(v, index, n * steps_x_ - 1);
-        push(v, index, n * steps_x_ + 1);
-        push(v, index, n * steps_x_ + 3);
+        push(imap, index, v, 1,                mix_d);
+        push(imap, index, v, 3,                oct_d);
+        push(imap, index, v, n * steps_x_ - 1, oct_d);
+        push(imap, index, v, n * steps_x_ + 1, mix_d);
+        push(imap, index, v, n * steps_x_ + 3, oct_d);
         break;
       case 1:
-        push(v, index, 1);
+        push(imap, index, v, 1,                oct_d);
         break;
       case 2:
-        push(v, index, 1);
-        push(v, index, n * steps_x_ + 1);
+        push(imap, index, v, 1,                mix_d);
+        push(imap, index, v, n * steps_x_ + 1, mix_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::truncated_hexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::truncated_hexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
 
+    Real tri_d = size_x_ * ((1. + 2. / root_3()) / (root_3() + 2.));
+    Real dod_d = size_x_;
+
     switch (i)
     {
       case 0:
-        push(v, index, 2);
-        push(v, index, 3);
-        push(v, index, 4);
-        push(v, index, 5);
-        push(v, index, 6);
-        push(v, index, n * steps_x_ - 1);
-        push(v, index, n * steps_x_ + 1);
-        push(v, index, n * steps_x_ + 5);
+        push(imap, index, v, 2,                tri_d);
+        push(imap, index, v, 3,                tri_d);
+        push(imap, index, v, 4,                tri_d);
+        push(imap, index, v, 5,                dod_d);
+        push(imap, index, v, 6,                dod_d);
+        push(imap, index, v, n * steps_x_ - 1, dod_d);
+        push(imap, index, v, n * steps_x_ + 1, tri_d);
+        push(imap, index, v, n * steps_x_ + 5, dod_d);
         break;
       case 1:
-        push(v, index, 1);
-        push(v, index, 2);
-        push(v, index, 3);
-        push(v, index, 6);
+        push(imap, index, v, 1,                dod_d);
+        push(imap, index, v, 2,                tri_d);
+        push(imap, index, v, 3,                tri_d);
+        push(imap, index, v, 6,                dod_d);
         break;
       case 2:
-        push(v, index, 2);
-        push(v, index, n * steps_x_ + 1);
+        push(imap, index, v, 2,                tri_d);
+        push(imap, index, v, n * steps_x_ + 1, tri_d);
         break;
       case 3:
-        push(v, index, 2);
-        push(v, index, 3);
+        push(imap, index, v, 2,                tri_d);
+        push(imap, index, v, 3,                tri_d);
         break;
       case 4:
-        push(v, index, 3);
+        push(imap, index, v, 3,                tri_d);
         break;
       case 5:
-        push(v, index, 4);
+        push(imap, index, v, 4,                tri_d);
         break;
     }
   }
 
   template <typename T1, typename T2, typename I>
   inline void
-  Tessellation<T1, T2, I>::truncated_trihexagonal_links(std::vector<IndexType>* v, IndexType index) const
+  Tessellation<T1, T2, I>::truncated_trihexagonal_links(IndexMapPrm imap, IndexPrm index, Links* v) const
   {
     IndexType n = pattern_.size();
     IndexType i = index % n;
+
+    Real dod_squ = truncated_trihexagonal_dv() / 2.;;
+    Real dod_hex = size_x_ / 3.;
+    Real hex_squ = size_x_ / 6.;
 
     switch (i)
     {
       case  0:
-        push(v, index,  3);
-        push(v, index,  8);
-        push(v, index, n * steps_x_ -  8);
-        push(v, index, n * steps_x_ -  3);
-        push(v, index, n * steps_x_ +  2);
-        push(v, index, n * steps_x_ +  7);
-        push(v, index, n * steps_x_ +  8);
+        push(imap, index, v,  3,                dod_squ);
+        push(imap, index, v,  8,                dod_hex);
+        push(imap, index, v, n * steps_x_ -  8, dod_squ);
+        push(imap, index, v, n * steps_x_ -  3, dod_hex);
+        push(imap, index, v, n * steps_x_ +  2, dod_squ);
+        push(imap, index, v, n * steps_x_ +  7, dod_hex);
+        push(imap, index, v, n * steps_x_ +  8, dod_hex);
         break;
       case  1:
-        push(v, index, n * steps_x_ -  4);
-        push(v, index, n * steps_x_ - 10);
+        push(imap, index, v, n * steps_x_ -  4, dod_hex);
+        push(imap, index, v, n * steps_x_ - 10, dod_squ);
         break;
       case  2:
-        push(v, index,  1);
-        push(v, index,  2);
-        push(v, index, n * steps_x_ +  1);
-        push(v, index, n * steps_x_ -  9);
+        push(imap, index, v,  1,                dod_hex);
+        push(imap, index, v,  2,                dod_hex);
+        push(imap, index, v, n * steps_x_ +  1, dod_hex);
+        push(imap, index, v, n * steps_x_ -  9, hex_squ);
         break;
       case  3:
-        push(v, index,  2);
-        push(v, index,  3);
+        push(imap, index, v,  2,                dod_hex);
+        push(imap, index, v,  3,                dod_hex);
         break;
       case  4:
-        push(v, index,  3);
+        push(imap, index, v,  3,                dod_hex);
         break;
       case  5:
-        push(v, index,  4);
+        push(imap, index, v,  4,                dod_hex);
         break;
       case  6:
-        push(v, index,  4);
-        push(v, index,  6);
-        push(v, index, n * steps_x_ +  3);
-        push(v, index, n * steps_x_ +  5);
+        push(imap, index, v,  4,                hex_squ);
+        push(imap, index, v,  6,                dod_squ);
+        push(imap, index, v, n * steps_x_ +  3, hex_squ);
+        push(imap, index, v, n * steps_x_ +  5, dod_squ);
         break;
       case  7:
-        push(v, index,  7);
-        push(v, index,  6);
-        push(v, index,  5);
-        push(v, index,  4);
+        push(imap, index, v,  7,                dod_squ);
+        push(imap, index, v,  6,                dod_squ);
+        push(imap, index, v,  5,                hex_squ);
+        push(imap, index, v,  4,                hex_squ);
         break;
       case  8:
-        push(v, index,  5);
-        push(v, index,  8);
-        push(v, index, 16);
+        push(imap, index, v,  5,                hex_squ);
+        push(imap, index, v,  8,                dod_squ);
+        push(imap, index, v, 16,                hex_squ);
         break;
       case  9:
-        push(v, index,  5);
-        push(v, index,  8);
-        push(v, index, n * steps_x_ +  4);
+        push(imap, index, v,  5,                hex_squ);
+        push(imap, index, v,  8,                dod_squ);
+        push(imap, index, v, n * steps_x_ +  4, hex_squ);
         break;
       case  10:
-        push(v, index,  9);
-        push(v, index,  6);
-        push(v, index,  5);
+        push(imap, index, v,  9,                dod_squ);
+        push(imap, index, v,  6,                hex_squ);
+        push(imap, index, v,  5,                hex_squ);
         break;
       case  11:
-        push(v, index, 10);
-        push(v, index,  6);
+        push(imap, index, v, 10,                dod_squ);
+        push(imap, index, v,  6,                hex_squ);
         break;
     }
   }
@@ -1051,7 +1150,7 @@ namespace mml
   inline void
   Tessellation<T1, T2, I>::init_hexagonal_pattern()
   {
-    E1Point base = E1Point((-2 * dh_) / 3. - dv_ / 2.);
+    E1Point base = E1Point(-dh_ / 3. - dv_ / 2.);
     E1VectorsVector xs = create_vector(dh_, 6, 8);
     E1VectorsVector ys = create_vector(dv_, 2, 4);
     E1PointsMatrix p = create_matrix(base, xs, ys);
@@ -1431,16 +1530,16 @@ namespace mml
     dv_ = E1Vector((dh_.normal() * Real(size_y_)) / size_x_);
     angle_ = acos(dh_.x() / dh_.length()); // corrects angle
 
-    E1Value tmpx = mml_mod(center_.x(), size_x_);
-    E1Value tmpy = mml_mod(center_.y(), size_y_);
+    E1Value tmpx = to<E1Value>(mml_mod(center_.x(), size_x_));
+    E1Value tmpy = to<E1Value>(mml_mod(center_.y(), size_y_));
     center_ =
       E1Point(bounds_.center()) +
       E1Vector((tmpx * dh_) / to<Real>(size_x_) +
                (tmpy * dv_) / to<Real>(size_y_));
 
     E1Value dt = bound_box_.width() + bound_box_.height();
-    steps_x_ = to<IndexType>(std::max(dt / size_x_ + 2, 3));
-    steps_y_ = to<IndexType>(std::max(dt / size_y_ + 2, 3));
+    steps_x_ = std::max(to<IndexType>(dt / size_x_ + 2), IndexType(3));
+    steps_y_ = std::max(to<IndexType>(dt / size_y_ + 2), IndexType(3));
 
     base_ = center_
       - to<E1Value>(steps_x_ / 2) * dh_
@@ -1465,6 +1564,7 @@ namespace mml
 # undef MMLM_case_links
 # undef MMLM_case_dv
 # undef MMLM_case_pattern
+# undef MMLM_ratio
 
 
 

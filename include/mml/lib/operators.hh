@@ -11,6 +11,7 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Includes
 
+# include <cmath>
 # include <boost/typeof/typeof.hpp>
 # include <boost/preprocessor.hpp>
 # include <boost/type_traits.hpp>
@@ -60,6 +61,7 @@
 # define MML_HASNT(X, T1, T2)  boost::mpl::not_<MML_HAS(X, T1, T2)>
 
 # define MML_RESULT(X, T1, T2) typename MML_MTNM(X)<T1, T2, MML_HAS(X, T1, T2)::value>::type
+# define MML_RESULT_TRAIT(X, T1, T2)    MML_MTNM(X)<T1, T2, MML_HAS(X, T1, T2)::value>
 
 
 
@@ -70,6 +72,13 @@ namespace mml
 {
 
   BOOST_PP_SEQ_FOR_EACH(MML_OP_TRAIT, _, MML_OPS)
+
+  template <typename T1, typename T2>
+  struct FmodResult
+  {
+    public:
+      typedef BOOST_TYPEOF_TPL(std::fmod(T1(), T2())) type;
+  };
 
 }
 

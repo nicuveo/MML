@@ -46,6 +46,9 @@ namespace mml
         Rect(const ExactPoint& min, const ExactPoint& max) throw();
         Rect(PrmValueType xmin, PrmValueType ymin, PrmValueType xmax, PrmValueType ymax) throw();
 
+        template <typename T2>
+        Rect(const Rect<T2>&);
+
         static Rect absolute(const ExactPoint& min, const ExactPoint& max);
         static Rect absolute(PrmValueType xmin, PrmValueType ymin, PrmValueType xmax, PrmValueType ymax);
         static Rect relative(const ExactPoint& min, const ExactVector& delta);
@@ -91,6 +94,20 @@ namespace mml
         void set_y_max(PrmValueType);
 
 
+        // modifiers
+
+        Rect expanded(PrmValueType) const;
+        Rect expanded(PrmValueType, PrmValueType) const;
+        Rect expanded(PrmValueType, PrmValueType, PrmValueType, PrmValueType) const;
+        Rect expanded(const ExactPoint&) const;
+        Rect expanded(const ExactRect&) const;
+        Rect shrinked(PrmValueType) const;
+        Rect shrinked(PrmValueType, PrmValueType) const;
+        Rect shrinked(PrmValueType, PrmValueType, PrmValueType, PrmValueType) const;
+        Rect shrinked(const ExactPoint&) const;
+        Rect shrinked(const ExactRect&) const;
+
+
         // in-place modifiers
 
         using ExactShapeBase::move_of;
@@ -104,6 +121,17 @@ namespace mml
         void resize_to(const ExactVector&);
 
         void scale(PrmReal);
+
+        void expand(PrmValueType);
+        void expand(PrmValueType, PrmValueType);
+        void expand(PrmValueType, PrmValueType, PrmValueType, PrmValueType);
+        void expand(const ExactPoint&);
+        void expand(const ExactRect&);
+        void shrink(PrmValueType);
+        void shrink(PrmValueType, PrmValueType);
+        void shrink(PrmValueType, PrmValueType, PrmValueType, PrmValueType);
+        void shrink(const ExactPoint&);
+        void shrink(const ExactRect&);
 
 
       private:

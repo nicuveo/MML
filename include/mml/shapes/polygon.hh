@@ -58,6 +58,9 @@ namespace mml
         Polygon() throw();
         Polygon(const ExactPoints& points);
 
+        template <typename T2>
+        Polygon(const Polygon<T2>&);
+
 
         // accessors
 

@@ -48,6 +48,16 @@ namespace mml
     }
 
 
+    template <typename T>
+    template <typename T2>
+    Line<T>::Line(const Line<T2>& l)
+    {
+      c_[0] = l.p0();
+      c_[1] = l.p1();
+    }
+
+
+
 
     // accessors
 

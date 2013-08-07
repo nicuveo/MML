@@ -13,15 +13,15 @@ DEPS  = $(notdir $(CFIL:.cc=.d))
 all: $(EXE)
 
 clean:
-	rm -f $(OBJS)
+	rm -fv $(OBJS) $(EXE) $(DEPS) *.o *.d gmon.out *.gcno *.gcno *.gcov *.gcda
 
 distclean: clean
-	rm -f $(EXE) $(DEPS) Makefile.rules out err compil.out compil.err
+	rm -fv *.out *.err Makefile.rules
 
 
 # COMPIL
 
-$(EXE): $(OBJS) $(LIBS)
+$(EXE): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $(EXE)
 
 $(OBJS):

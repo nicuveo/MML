@@ -54,6 +54,14 @@ namespace mml
     }
 
 
+    template <typename T>
+    template <typename T2>
+    Circle<T>::Circle(const Circle<T2>& c)
+      : center_(c.center()), radius_(to<T>(c.radius()))
+    {
+    }
+
+
 
     // accessors
 

@@ -1,3 +1,0 @@
-#! /usr/bin/env bash
-
-svn export --force . export/

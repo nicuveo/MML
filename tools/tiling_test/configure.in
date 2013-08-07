@@ -1,0 +1,5 @@
+## configure.in
+## Made by nicuveo for mml
+
+CFIL = tiling_test.cc ../common/img/bitmap.cc ../common/img/color.cc ../common/img/io/tga.cc
+CFLAGS += -I../../include -I../common

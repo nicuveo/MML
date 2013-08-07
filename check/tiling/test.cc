@@ -29,7 +29,7 @@
         for (int y = 1000; y <= 8000; y *= 2)                   \
         {                                                       \
           double ra = (a * (2 * mml::pi()) / 360.);             \
-          Tessellation tess(type, ref, x, y, ra);               \
+          Tessellation tess(type, ref, Vector(x, y), ra);       \
           const std::vector<Shape>& pt = tess.pattern();        \
           const Vector& dh = tess.dh();                         \
           const Vector& dv = tess.dv();                         \
@@ -66,9 +66,11 @@
                                                                 \
     for (it = tess.begin(false, true); it != tess.end(); ++it)  \
     {                                                           \
-      l[it.index()] = it.links();                               \
-      mml_foreach (int nid, it.links())                         \
-        l[nid].push_back(it.index());                           \
+      mml_foreach (const Tessellation::Link& nid, it.links())   \
+      {                                                         \
+        l[it.index()].push_back(nid.first);                     \
+        l[nid.first].push_back(it.index());                     \
+      }                                                         \
     }                                                           \
                                                                 \
     for (it = tess.begin(false); it != tess.end(); ++it)        \
