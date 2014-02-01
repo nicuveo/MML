@@ -4,7 +4,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <mml/mml.hh>
+#include <nauths/mml/mml.hh>
 #include "img/io/tga.hh"
 
 

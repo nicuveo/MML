@@ -11,7 +11,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <iomanip>
-#include <mml/mml.hh>
+#include <nauths/mml/mml.hh>
 
 #define BOOST_TEST_MODULE Grid
 #include <boost/test/included/unit_test.hpp>

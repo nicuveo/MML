@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <mml/mml.hh>
+#include <nauths/mml/mml.hh>
 
 #define BOOST_TEST_MODULE Line
 #include <boost/test/included/unit_test.hpp>

@@ -10,9 +10,9 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <mml/shapes.hh>
-#include <mml/tools.hh>
-#include <mml/io.hh>
+#include <nauths/mml/shapes.hh>
+#include <nauths/mml/tools.hh>
+#include <nauths/mml/io.hh>
 
 #define BOOST_TEST_MODULE Shape
 #include <boost/test/included/unit_test.hpp>

@@ -21,7 +21,7 @@ variant. Each shape can be one of those fundamental shapes:
   * or a generic `Polygon` (a list of points)
 
 ```
-#include <mml/mml.hh>
+#include <nauths/mml/mml.hh>
 
 typedef mml::shapes<int>::Point  Point;
 typedef mml::shapes<int>::Rect   Rect;
@@ -53,7 +53,7 @@ relational operators on shapes based on the inclusion notion.
 ```
 #define MML_OPERATORS
 #define MML_MACROS
-#include <mml/mml.hh>
+#include <nauths/mml/mml.hh>
 
 typedef mml::shapes<int>::Shape Shape;
 
