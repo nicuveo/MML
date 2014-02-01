@@ -18,7 +18,7 @@ variant. Each shape can be one of those fundamental shapes:
   * a `Line` segment;
   * a `Rect` (which is really an *AABB*);
   * a `Circle`;
-  * or a generic `Polygon` (a list of points)
+  * a generic `Polygon` (a basic list of points)
 
 ```
 #include <nauths/mml/mml.hh>
@@ -51,8 +51,9 @@ Some high-level algorithms that work on shape include *inclusion test* and
 relational operators on shapes based on the inclusion notion.
 
 ```
-#define MML_OPERATORS
-#define MML_MACROS
+#define MML_OPERATORS // enables < and > relations
+#define MML_MACROS    // enables _contains_ and _is_in_ alias
+
 #include <nauths/mml/mml.hh>
 
 typedef mml::shapes<int>::Shape Shape;
@@ -72,4 +73,5 @@ Misc. tools
 -----------
 
 The *MML* implements several other tools, such as a basic Perlin Noise
-generator and a regular / semi-regular tiling generator.
+generator and a regular / semi-regular tiling generator. See full
+documentation.
