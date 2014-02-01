@@ -25,11 +25,11 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Macros
 
-# define MML_IS_SHAPE(T) \
+# define MML_IS_SHAPE(T)                                       \
   boost::is_base_of<mml::il::ShapeCommonBase, T>
 
-# define MML_ISNT_SHAPE(T) \
-  boost::mpl::not_<boost::is_base_of<mml::il::ShapeCommonBase, T> >
+# define MML_ISNT_SHAPE(T)                                     \
+  boost::mpl::not_< MML_IS_SHAPE(T) >
 
 
 
@@ -51,10 +51,9 @@ namespace mml
   {
 
     // ShapeCommonBase
-    //   non-template common base to all shapes
-    //   used as a flag to identify shapes, as for all shape S
-    //   boost::is_base_of<ShapeCommonBase, S> is true.
-    //   This is typically used with boost::enable_if
+    //   Non-template common base to all shapes, used as a flag to identify
+    //   shapes, as for all shape S `boost::is_base_of<ShapeCommonBase, S>` is
+    //   true. This is typically used with ̀boost::enable_if`.
 
     class ShapeCommonBase
     {
@@ -62,11 +61,9 @@ namespace mml
 
 
     // ShapeBase
-    //   template base class for shapes;
-    //   does typedefs and virtual method declarations.
-    //   those virtual methods are not used; in fact, by default,
-    //   they aren't even declared, as the mml always manipulate
-    //   exact types
+    //   Template base class for shapes; does typedefs and virtual method
+    //   declarations. Those virtual methods are not used; in fact, by default,
+    //   they aren't even declared, as the mml always manipulates exact types.
 
     template <typename E, typename T>
     class ShapeBase : public ShapeCommonBase
@@ -133,7 +130,8 @@ namespace mml
 
 
     // TypedShapeBase
-    //   the same, but with knowledge of the ShapeType
+    //   A simple "overlay" of ShapeBase, but with knowledge of the exact
+    //   ShapeType (using CRTP).
 
     template <typename E, typename T, ShapeType Type>
     class TypedShapeBase : public ShapeBase<E, T>

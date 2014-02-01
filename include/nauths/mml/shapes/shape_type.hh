@@ -56,7 +56,6 @@ namespace mml
   typedef shape::Type ShapeType;
   typedef shape::DualType ShapeDualType;
 
-
 }
 
 
