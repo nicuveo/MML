@@ -4,7 +4,7 @@ F1=`mktemp`
 F2=`mktemp`
 
 find src -type f -iname "*.cc" \! -regex ".*svn.*" | sort > $F1
-sed -n 's/^ \+\(.*\.cc\) *\\/\1/p' configure.in     | sort > $F2
+sed -n 's/^ \+\(.*\.cc\) *\\/\1/p' configure.in    | sort > $F2
 
 M1=`comm $F1 $F2 -1 -3`
 M2=`comm $F1 $F2 -2 -3`

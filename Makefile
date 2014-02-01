@@ -12,7 +12,6 @@ EXE     = bin/$(PROJ)
 LIBA    = bin/lib$(PROJ).a
 LIBSO   = bin/lib$(PROJ).so
 DYLIB   = bin/lib$(PROJ).dylib
-INCLUDE = include/$(PROJ)
 
 $(PROJ): all
 
@@ -36,13 +35,13 @@ CLEAN += '*~' '\#*' '.\#*' '.DS_Store' '.gdb_history' '*.stackdump' \
 all: $(TARGETS)
 
 install: all
-	@if [ -x ./install ] ; then ./install "$(PREFIX)" ; else			\
-	    test -r "$(EXE)"     && install -v        "$(EXE)"   "$(PREFIX)/bin";	\
-	    test -r "$(LIBA)"    && install -v -m 644 "$(LIBA)"  "$(PREFIX)/lib";	\
-	    test -r "$(LIBSO)"   && install -v -m 644 "$(LIBSO)" "$(PREFIX)/lib";	\
-	    test -r "$(DYLIB)"   && install -v -m 644 "$(DYLIB)" "$(PREFIX)/lib";	\
-	    test -d "$(INCLUDE)" && find "$(INCLUDE)" -type f -exec			\
-                                    install -v -m 644 "{}"    -D "$(PREFIX)/{}" \;;	\
+	@if [ -x ./install ] ; then ./install "$(PREFIX)" ; else		\
+	    test -r "$(EXE)"   && install -v	    "$(EXE)"   "$(PREFIX)/bin";	\
+	    test -r "$(LIBA)"  && install -v -m 644 "$(LIBA)"  "$(PREFIX)/lib";	\
+	    test -r "$(LIBSO)" && install -v -m 644 "$(LIBSO)" "$(PREFIX)/lib";	\
+	    test -r "$(DYLIB)" && install -v -m 644 "$(DYLIB)" "$(PREFIX)/lib";	\
+	    find include -type f \! -path '*.svn*' 			        \
+                -exec install -v -m 644 "{}" -D "$(PREFIX)/{}" \;;		\
 	fi
 
 
@@ -80,10 +79,10 @@ $(foreach sub,$(SUB_DIRS),$(eval $(call sub_make_rule,$(sub))))
 
 
 clean: do_clean
-	$(foreach sub,$(SUB_DIRS) ,$(call sub_call_rule,$(sub), clean);)
+	$(foreach sub,$(SUB_DIRS),$(call sub_call_rule,$(sub), clean);)
 
 distclean: do_distclean
-	$(foreach lib,$(LIBS_DIRS),$(call sub_call_rule,$(lib), distclean);)
+	$(foreach sub,$(SUB_DIRS),$(call sub_call_rule,$(sub), distclean);)
 
 
 

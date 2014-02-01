@@ -32,7 +32,7 @@ coverage:
 
 clean:
 	for e in $(TESTS) ; do (cd $$e && make clean) ; done
-	rm -Rfv analysis.log coverage.log test.log coverage.info $(COVERAGE_OUT)
+	rm -Rfv */cov.info analysis.log coverage.log test.log coverage.info $(COVERAGE_OUT)
 
 distclean:
 	for e in $(TESTS) ; do (cd $$e && make distclean) ; done
