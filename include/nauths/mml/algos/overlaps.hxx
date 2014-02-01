@@ -1,6 +1,10 @@
 //
-// overlaps.hxx for mml
-// Made by nicuveo <crucuny@gmail.com>
+// Copyright Antoine Leblanc 2010 - 2013
+// Distributed under the MIT license.
+//
+// http://nauths.fr
+// http://github.com/nicuveo
+// mailto://antoine.jp.leblanc@gmail.com
 //
 
 #ifndef MML_OVERLAPS_HXX_
@@ -185,7 +189,6 @@ namespace mml
          overlaps(p, Line<T2>(r.x_min(), r.y_max(), r.x_max(), r.y_max())) or
          overlaps(p, Line<T2>(r.x_max(), r.y_max(), r.x_max(), r.y_min())) or
          overlaps(p, Line<T2>(r.x_max(), r.y_min(), r.x_min(), r.y_min())));
-      return false;
     }
 
     template <typename T1, typename T2>
