@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2014
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -22,9 +22,10 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Local macros
 
-# define MMLM_output(_1, ostr, S)               \
-  case shape::MMLM_NAME(S):                     \
-  ostr << s.MMLM_name(S)(); break;              \
+# define MMLM_output(_1, ostr, S)                                    \
+  case shape::MMLM_NAME(S):                                          \
+    ostr << s.MMLM_name(S)();                                        \
+    break;                                                           \
 
 
 
