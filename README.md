@@ -20,7 +20,7 @@ variant. Each shape can be one of those fundamental shapes:
   * a `Circle`;
   * a generic `Polygon` (a basic list of points)
 
-```
+```c++
 #include <nauths/mml/mml.hh>
 
 typedef mml::shapes<int>::Point  Point;
@@ -50,7 +50,7 @@ Some high-level algorithms that work on shape include *inclusion test* and
 *overlapping tests*. One can even use a given optional macro to define
 relational operators on shapes based on the inclusion notion.
 
-```
+```c++
 #define MML_OPERATORS // enables < and > relations
 #define MML_MACROS    // enables _contains_ and _is_in_ alias
 
