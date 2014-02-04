@@ -46,12 +46,12 @@ namespace
 
   const int IMW      = 1600;
   const int IMH      = 1200;
-  const int REF_SIZE =  600;
+  const int REF_SIZE =  503;
 
   const int FACT     =   2;
   const int   AA     =   0;
 
-  const Shape REF    = Shape::square(FACT * IMW / 2, FACT * IMH / 2, FACT * REF_SIZE);
+  const Shape REF    = Shape::circle(FACT * IMW / 2, FACT * IMH / 2, FACT * REF_SIZE);
 
 
   // scale
@@ -247,7 +247,7 @@ namespace
 
   Bitmap populate(mml::TilingType type, int a, int x, int m)
   {
-    Shape draw(REF/*.circle().polygonize(1024 * FACT)*/);
+    Shape draw(REF);
     Bitmap res(IMW * FACT, IMH * FACT, Color::black);
     std::set<double> dbs;
 
@@ -271,7 +271,7 @@ namespace
       }
 
       int i = (it.index() % tess.pattern().size()) + 1;
-      c = mul(c, 0.2 + 0.8 * (i / float(tess.pattern().size())));
+      c = mul(c, 0.4 + 0.6 * (i / float(tess.pattern().size())));
 
       switch (m)
       {
@@ -303,11 +303,11 @@ namespace
 
           switch (m)
           {
-            case 0:
-            {
-              draw_line(res, l, Color::white);
-              break;
-            }
+            // case 0:
+            // {
+            //   draw_line(res, l, Color::white);
+            //   break;
+            // }
 
             case 1:
             {
@@ -402,12 +402,10 @@ void render(unsigned t, int a, int x, int m)
 
 int main()
 {
-  // for (unsigned t = 0; t < (sizeof (tts) / sizeof (mml::TilingType)); ++t)
-  //   for (int a = 0; a < 360; a += 120)
-  //     for (int x = 25; x <= 400; x *= 2)
-  //       for (int m = 0; m <= 2; ++m)
-  //         render(t, a, x, m);
-
-//  render(11, 0, 120, 2);
-  render(11, 0, 500, 1);
+  for (unsigned t = 0; t < (sizeof (tts) / sizeof (mml::TilingType)); ++t)
+    for (int x = 50; x <= 400; x *= 2)
+    {
+      render(t, 0, x, 0);
+      render(t, 0, x, 1);
+    }
 }
