@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>MML by nicuveo</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>MML</h1>
+        <p>Minimalistic Mathematics Library</p>
+
+        <p class="view"><a href="https://github.com/nicuveo/MML">View the Project on GitHub <small>nicuveo/MML</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/nicuveo/MML/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/nicuveo/MML/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/nicuveo/MML">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p>The <em>MML</em> was born as a collection of various maths tools that
+I needed at some point in some of my projects. It is now a rather
+unified library that focuses on fundamental lightweight 2D shapes.</p>
+
+<p>It is a "headers only" library, as it relies on templates / macros
+to decide what types to use for value storage and for intermediate
+computations, and what relational operations to use on them.</p>
+
+<h2>
+<a name="shapes" class="anchor" href="#shapes"><span class="octicon octicon-link"></span></a>Shapes</h2>
+
+<p>The <em>MML</em> expose a variadic <code>Shape</code> structure, implemented with
+<code>boost variant</code>. Each shape can be one of those fundamental shapes:</p>
+
+<ul>
+<li>a <code>Point</code> / <code>Vector</code>;</li>
+<li>a <code>Line</code> segment;</li>
+<li>a <code>Rect</code> (which is really an <em>AABB</em>);</li>
+<li>a <code>Circle</code>;</li>
+<li>a generic <code>Polygon</code> (a basic list of points).</li>
+</ul><div class="highlight highlight-c++"><pre><span class="cp">#include &lt;nauths/mml/mml.hh&gt;</span>
+
+<span class="k">typedef</span> <span class="n">mml</span><span class="o">::</span><span class="n">shapes</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">Point</span>  <span class="n">Point</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">mml</span><span class="o">::</span><span class="n">shapes</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">Rect</span>   <span class="n">Rect</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">mml</span><span class="o">::</span><span class="n">shapes</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">Circle</span> <span class="n">Circle</span><span class="p">;</span>
+<span class="k">typedef</span> <span class="n">mml</span><span class="o">::</span><span class="n">shapes</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">Shape</span>  <span class="n">Shape</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">test</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="n">Shape</span> <span class="n">circle</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="n">Shape</span> <span class="n">box</span> <span class="o">=</span> <span class="n">Rect</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">Point</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">));</span>
+  <span class="n">Rect</span> <span class="n">circle_bbox</span> <span class="o">=</span> <span class="n">circle</span><span class="p">.</span><span class="n">bounding_rect</span><span class="p">();</span>
+
+  <span class="n">assert</span><span class="p">(</span><span class="n">circle_bbox</span> <span class="o">==</span> <span class="n">box</span><span class="p">);</span>
+
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"circle area: "</span> <span class="o">&lt;&lt;</span> <span class="n">circle</span><span class="p">.</span><span class="n">area</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span>
+            <span class="o">&lt;&lt;</span> <span class="s">"box area:    "</span> <span class="o">&lt;&lt;</span> <span class="n">box</span><span class="p">.</span><span class="n">area</span><span class="p">()</span>    <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="algorithms" class="anchor" href="#algorithms"><span class="octicon octicon-link"></span></a>Algorithms</h2>
+
+<p>Some high-level algorithms that work on shapes include <em>inclusion test</em>
+and <em>overlapping tests</em>. One can even use a given optional macro to
+define relational operators on shapes based on the inclusion notion.</p>
+
+<div class="highlight highlight-c++"><pre><span class="cp">#define MML_OPERATORS </span><span class="c1">// enables &lt; and &gt; relations</span>
+<span class="cp">#define MML_MACROS    </span><span class="c1">// enables _contains_ and _is_in_ alias</span>
+
+<span class="cp">#include &lt;nauths/mml/mml.hh&gt;</span>
+
+<span class="k">typedef</span> <span class="n">mml</span><span class="o">::</span><span class="n">shapes</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;::</span><span class="n">Shape</span> <span class="n">Shape</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">test</span><span class="p">(</span><span class="n">Shape</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">s1</span><span class="p">,</span> <span class="n">Shape</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">s2</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">mml</span><span class="o">::</span><span class="n">contains</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&gt;</span> <span class="n">s2</span><span class="p">));</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">mml</span><span class="o">::</span><span class="n">contains</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">s1</span> <span class="n">_contains_</span> <span class="n">s2</span><span class="p">));</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">mml</span><span class="o">::</span><span class="n">is_in</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">s1</span> <span class="o">&lt;</span> <span class="n">s2</span><span class="p">));</span>
+  <span class="n">assert</span><span class="p">(</span><span class="n">mml</span><span class="o">::</span><span class="n">is_in</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">s1</span> <span class="n">_is_in_</span> <span class="n">s2</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="tools" class="anchor" href="#tools"><span class="octicon octicon-link"></span></a>Tools</h2>
+
+<p>The <em>MML</em> implements several other tools, such as a basic Perlin Noise
+generator and a regular / semi-regular tiling generator. For more
+information, please see the full documentation in the
+<a href="https://github.com/nicuveo/MML/wiki">Wiki</a>.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/nicuveo">nicuveo</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
