@@ -1,9 +1,9 @@
 *MML*: a Minimalistic Maths Library
 ===================================
 
-The *MML* was born as the collection of various maths tools that
+The *MML* was born as a collection of various maths tools that
 I needed at some point in some of my projects. It is now a rather
-unfieed library that focuses on fundamental 2D shapes.
+unified library that focuses on fundamental 2D shapes.
 
 It is a "headers only" library, as it relies on templates / macros
 to decide what types to use for value storage and for intermediate
