@@ -18,6 +18,7 @@
 # include <cmath>
 # include "nauths/mml/lib/real.hh"
 # include "nauths/mml/lib/template.hh"
+# include "nauths/mml/shapes/shape_macros.hh"
 
 
 
@@ -35,6 +36,15 @@
 
 
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+// Local macros
+
+# define MMLM_decl(_1, _2, S)                                        \
+  template <typename T>                                              \
+  class MMLM_Name(S);                                                \
+
+
+
+//HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Internal types
 
 namespace mml
@@ -43,13 +53,10 @@ namespace mml
   namespace il
   {
 
-    template <typename T> class Shape;
-    template <typename T> class Point;
-    template <typename T> class Line;
-    template <typename T> class Rect;
-    template <typename T> class Circle;
-    template <typename T> class Polygon;
-    template <typename T> class Empty;
+    template <typename T>
+    class Shape;
+
+    BOOST_PP_SEQ_FOR_EACH(MMLM_decl, _, MMLM_ALL_SHAPES)
 
   }
 
@@ -139,6 +146,13 @@ namespace mml
   using il::Polygon;
 
 }
+
+
+
+//HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+// Local macros undef
+
+# undef MMLM_decl
 
 
 
