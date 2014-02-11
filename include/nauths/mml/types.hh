@@ -38,9 +38,15 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Local macros
 
-# define MMLM_decl(_1, _2, S)                                        \
+# define MMLM_decl1(_1, _2, S)                                       \
   template <typename T>                                              \
   class MMLM_Name(S);                                                \
+
+# define MMLM_decl2(_1, _2, S)                                       \
+  typedef il::MMLM_Name(S)<T>  MMLM_Name(S);                         \
+
+# define MMLM_decl3(_1, _2, S)                                       \
+  using il::MMLM_Name(S);                                            \
 
 
 
@@ -56,7 +62,7 @@ namespace mml
     template <typename T>
     class Shape;
 
-    BOOST_PP_SEQ_FOR_EACH(MMLM_decl, _, MMLM_ALL_SHAPES)
+    BOOST_PP_SEQ_FOR_EACH(MMLM_decl1, _, MMLM_ALL_SHAPES)
 
   }
 
@@ -127,23 +133,17 @@ namespace mml
   {
     public:
       typedef il::Shape<T>   Shape;
-      typedef il::Point<T>   Point;
       typedef il::Point<T>   Vector;
-      typedef il::Line<T>    Line;
-      typedef il::Rect<T>    Rect;
-      typedef il::Circle<T>  Circle;
-      typedef il::Polygon<T> Polygon;
+
+      BOOST_PP_SEQ_FOR_EACH(MMLM_decl2, _, MMLM_ALL_SHAPES)
   };
 
 
   // Shape types
 
   using il::Shape;
-  using il::Point;
-  using il::Line;
-  using il::Rect;
-  using il::Circle;
-  using il::Polygon;
+
+  BOOST_PP_SEQ_FOR_EACH(MMLM_decl3, _, MMLM_ALL_SHAPES)
 
 }
 
@@ -152,7 +152,9 @@ namespace mml
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Local macros undef
 
-# undef MMLM_decl
+# undef MMLM_decl1
+# undef MMLM_decl2
+# undef MMLM_decl3
 
 
 

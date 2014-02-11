@@ -10,16 +10,17 @@ TESTS =                                 \
   point                                 \
   line                                  \
   rect                                  \
-  circle                                \
-  polygon                               \
   empty                                 \
   shape                                 \
+  circle                                \
+  polygon                               \
   contains                              \
   overlaps                              \
-  grid                                  \
   tiling                                \
   perlin                                \
+  grid                                  \
   hash                                  \
+  extra                                 \
   tiling_ratios                         \
 
 CFIL =                                         \

@@ -27,13 +27,17 @@
 # define MMLM_name(S)  BOOST_PP_TUPLE_ELEM(4, 2, S)
 # define MMLM_VALUE(S) BOOST_PP_TUPLE_ELEM(4, 3, S)
 
+# ifndef MMLM_EXTRA_SHAPES
+#  define MMLM_EXTRA_SHAPES
+# endif
+
 # define MMLM_SHAPES                                              \
   ((POINT,   Point,   point,   1))                                \
   ((LINE,    Line,    line,    2))                                \
   ((RECT,    Rect,    rect,    3))                                \
   ((CIRCLE,  Circle,  circle,  5))                                \
   ((POLYGON, Polygon, polygon, 7))                                \
-
+  MMLM_EXTRA_SHAPES                                               \
 
 # define MMLM_ALL_SHAPES                                          \
   ((EMPTY,   Empty,   empty,   0))                                \
