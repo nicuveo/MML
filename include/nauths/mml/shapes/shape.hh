@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -43,6 +43,7 @@ namespace mml
   namespace il
   {
 
+    /// \brief Shape.
     template <typename T>
     class Shape : public ShapeBase<Shape<T>, T>
     {

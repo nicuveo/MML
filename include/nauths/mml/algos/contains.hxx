@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -213,7 +213,7 @@ namespace mml
   template <typename T1, typename T2>
   inline bool contains(const Circle<T1>& c, const Polygon<T2>& p)
   {
-    mml_foreach (const Point<T2>& pp, p.points())
+    for (const Point<T2>& pp : p.points())
     {
       if (not contains(c, pp))
         return false;
@@ -230,7 +230,7 @@ namespace mml
 
     bool is_in = false;
 
-    mml_foreach (const Line<T1>& l, poly.lines())
+    for (const Line<T1>& l : poly.lines())
     {
       if (contains(l, p))
         return true;
@@ -264,7 +264,7 @@ namespace mml
         not contains(p, c.center()))
       return false;
 
-    mml_foreach (const Line<T2>& l, p.lines())
+    for (const Line<T2>& l : p.lines())
       if (contains(c, il::closest_on_line(c.center(), l)))
         return false;
 
@@ -279,7 +279,7 @@ namespace mml
     if (contains(p1, p2.bounding_rect()))
       return true;
 
-    mml_foreach (const Line<T2>& l, p2.lines())
+    for (const Line<T2>& l : p2.lines())
       if (not contains(p1, l))
         return false;
 

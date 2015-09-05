@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -32,11 +32,13 @@ namespace mml
 
     // constructors
 
+    /// Creates an invalid ((0, 0) -> (0, 0)) line.
     template <typename T>
     Line<T>::Line() throw()
     {
     }
 
+    /// Creates a (p -> q) line.
     template <typename T>
     Line<T>::Line(const ExactPoint& p, const ExactPoint& q) throw()
     {
@@ -44,6 +46,7 @@ namespace mml
       c_[1] = q;
     }
 
+    /// Creates a ((px, py) -> (qx, qy)) line.
     template <typename T>
     Line<T>::Line(PrmValueType px, PrmValueType py, PrmValueType qx, PrmValueType qy) throw()
     {
@@ -52,6 +55,7 @@ namespace mml
     }
 
 
+    /// Creates a duplicate of line l.
     template <typename T>
     template <typename T2>
     Line<T>::Line(const Line<T2>& l)
@@ -65,6 +69,7 @@ namespace mml
 
     // accessors
 
+    /// Provides a const reference to the underlying point array.
     template <typename T>
     inline typename Line<T>::DataType const&
     Line<T>::data() const
@@ -73,6 +78,7 @@ namespace mml
     }
 
 
+    /// Returns a const reference to the first point.
     template <typename T>
     inline typename Line<T>::ExactPoint const&
     Line<T>::p0() const
@@ -80,6 +86,7 @@ namespace mml
       return c_[0];
     }
 
+    /// Returns a const reference to the second point.
     template <typename T>
     inline typename Line<T>::ExactPoint const&
     Line<T>::p1() const
@@ -87,6 +94,7 @@ namespace mml
       return c_[1];
     }
 
+    /// Returns a reference to the first point.
     template <typename T>
     inline typename Line<T>::ExactPoint&
     Line<T>::p0()
@@ -94,6 +102,7 @@ namespace mml
       return c_[0];
     }
 
+    /// Returns a reference to the second point.
     template <typename T>
     inline typename Line<T>::ExactPoint&
     Line<T>::p1()
@@ -102,6 +111,7 @@ namespace mml
     }
 
 
+    /// Returns the x coordinate of the first point.
     template <typename T>
     inline typename Line<T>::PrmValueType
     Line<T>::x0() const
@@ -109,6 +119,7 @@ namespace mml
       return p0().x();
     }
 
+    /// Returns the y coordinate of the first point.
     template <typename T>
     inline typename Line<T>::PrmValueType
     Line<T>::y0() const
@@ -116,6 +127,7 @@ namespace mml
       return p0().y();
     }
 
+    /// Returns the x coordinate of the second point.
     template <typename T>
     inline typename Line<T>::PrmValueType
     Line<T>::x1() const
@@ -123,6 +135,7 @@ namespace mml
       return p1().x();
     }
 
+    /// Returns the y coordinate of the second point.
     template <typename T>
     inline typename Line<T>::PrmValueType
     Line<T>::y1() const
@@ -130,6 +143,7 @@ namespace mml
       return p1().y();
     }
 
+    /// Returns a reference to the x coordinate of the first point.
     template <typename T>
     inline typename Line<T>::RefValueType
     Line<T>::x0()
@@ -137,6 +151,7 @@ namespace mml
       return p0().x();
     }
 
+    /// Returns a reference to the y coordinate of the first point.
     template <typename T>
     inline typename Line<T>::RefValueType
     Line<T>::y0()
@@ -144,6 +159,7 @@ namespace mml
       return p0().y();
     }
 
+    /// Returns a reference to the x coordinate of the second point.
     template <typename T>
     inline typename Line<T>::RefValueType
     Line<T>::x1()
@@ -151,6 +167,7 @@ namespace mml
       return p1().x();
     }
 
+    /// Returns a reference to the y coordinate of the second point.
     template <typename T>
     inline typename Line<T>::RefValueType
     Line<T>::y1()
@@ -162,12 +179,14 @@ namespace mml
 
     // access operators
 
+    /// Automagically casts the point into a const coordinate array.
     template <typename T>
     inline Line<T>::operator const DataType& () const
     {
       return c_;
     }
 
+    /// Automagically casts the point into a coordinate array.
     template <typename T>
     inline Line<T>::operator DataType& ()
     {
@@ -175,6 +194,7 @@ namespace mml
     }
 
 
+    /// Returns the point of index i (no checks performed).
     template <typename T>
     inline typename Line<T>::ExactPoint const&
     Line<T>::operator[](std::size_t i) const
@@ -182,6 +202,7 @@ namespace mml
       return c_[i];
     }
 
+    /// Returns the point of index i (no checks performed).
     template <typename T>
     inline typename Line<T>::ExactPoint&
     Line<T>::operator[](std::size_t i)
@@ -193,6 +214,7 @@ namespace mml
 
     // state
 
+    /// Returns whether the line is valid (i.e. the two points are different).
     template <typename T>
     inline bool
     Line<T>::valid() const
@@ -204,6 +226,7 @@ namespace mml
 
     // geometry
 
+    /// Computes the x offset between the two points.
     template <typename T>
     inline typename Line<T>::ValueType
     Line<T>::dx() const
@@ -211,6 +234,7 @@ namespace mml
       return x1() - x0();
     }
 
+    /// Computes the y offset between the two points.
     template <typename T>
     inline typename Line<T>::ValueType
     Line<T>::dy() const
@@ -218,6 +242,7 @@ namespace mml
       return y1() - y0();
     }
 
+    /// Computes the corresponding vector.
     template <typename T>
     inline typename Line<T>::ExactVector
     Line<T>::delta() const
@@ -226,6 +251,7 @@ namespace mml
     }
 
 
+    /// Computes the length of the line.
     template <typename T>
     inline Real
     Line<T>::length() const
@@ -236,6 +262,7 @@ namespace mml
       return std::sqrt(rx * rx + ry * ry);
     }
 
+    /// Computes the squared length of the line.
     template <typename T>
     inline typename Line<T>::ValueType
     Line<T>::sqr_length() const
@@ -244,6 +271,7 @@ namespace mml
     }
 
 
+    /// Creates a (possibly invalid) Rect that wraps this line.
     template <typename T>
     inline typename Line<T>::ExactRect
     Line<T>::bounding_rect() const
@@ -252,6 +280,7 @@ namespace mml
                        std::max(x0(), x1()), std::max(y0(), y1()));
     }
 
+    /// Computes the barycenter of the two points.
     template <typename T>
     inline typename Line<T>::ExactPoint
     Line<T>::center() const
@@ -259,6 +288,7 @@ namespace mml
       return ExactPoint((x0() + x1()) / 2, (y0() + y1()) / 2);
     }
 
+    /// Returns 0.
     template <typename T>
     inline Real
     Line<T>::perimeter() const
@@ -266,6 +296,7 @@ namespace mml
       return 0;
     }
 
+    /// Returns 0.
     template <typename T>
     inline Real
     Line<T>::area() const
@@ -277,6 +308,7 @@ namespace mml
 
     // modification operators
 
+    /// Inverts the line: (p -> q) becomes (q -> p).
     template <typename T>
     inline Line<T>
     Line<T>::operator-() const

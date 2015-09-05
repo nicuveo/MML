@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -53,7 +53,7 @@ namespace mml
         Real my = 0;
         Real ratio = 1. / static_cast<Real>(points.size());
 
-        mml_foreach (ExactPoint& p, points_)
+        for (ExactPoint const& p : points_)
         {
           min_.rx() = std::min(min_.x(), p.x());
           min_.ry() = std::min(min_.y(), p.y());
@@ -75,7 +75,7 @@ namespace mml
       const typename Polygon<T2>::ExactPoints& ops = p.points_data();
       ExactPoints nps;
 
-      mml_foreach (const typename Polygon<T2>::ExactPoint& op, ops)
+      for (const typename Polygon<T2>::ExactPoint& op : ops)
         nps.push_back(op);
 
       new (this) Polygon(nps);
@@ -99,20 +99,18 @@ namespace mml
     }
 
     template <typename T>
-    inline std::pair<typename Polygon<T>::EdgeIterator,
-                     typename Polygon<T>::EdgeIterator>
+    inline typename Polygon<T>::EdgeRange
     Polygon<T>::edges() const
     {
-      return tools::range(points_);
+      return npl::dual_range(points_);
     }
 
     template <typename T>
-    inline std::pair<typename Polygon<T>::LineIterator,
-                     typename Polygon<T>::LineIterator>
+    inline typename Polygon<T>::LineRange
     Polygon<T>::lines() const
     {
-      return std::make_pair(LineIterator(tools::begin(points_), &Polygon<T>::e_to_l),
-                            LineIterator(tools::end(points_),   &Polygon<T>::e_to_l));
+      return LineRange(LineIterator(npl::dual_begin(points_), &Polygon<T>::e_to_l),
+                       LineIterator(npl::dual_end(points_),   &Polygon<T>::e_to_l));
     }
 
 
@@ -159,8 +157,8 @@ namespace mml
     {
       Real res = 0;
 
-      mml_foreach (ExactEdge e, edges())
-        res += (tools::second(e) - tools::first(e)).length();
+      for (ExactEdge const& e : edges())
+        res += (npl::second(e) - npl::first(e)).length();
 
       return res;
     }
@@ -171,10 +169,10 @@ namespace mml
     {
       Real res = 0;
 
-      mml_foreach (ExactEdge e, edges())
+      for (ExactEdge const& e : edges())
         res = res
-        + tools::first(e).x() * tools::second(e).y()
-        - tools::first(e).y() * tools::second(e).x();
+        + npl::first(e).x() * npl::second(e).y()
+        - npl::first(e).y() * npl::second(e).x();
 
       return res < 0 ? (res / -2) : (res / 2);
     }
@@ -191,7 +189,7 @@ namespace mml
       ExactPoints np;
 
       np.reserve(points_.size());
-      mml_foreach (ExactPoint& p, np)
+      for (ExactPoint const& p : np)
         np.push_back(ft(p));
 
       return np;
@@ -205,7 +203,7 @@ namespace mml
     void
     Polygon<T>::move_of(const ExactVector& v)
     {
-      mml_foreach (ExactPoint& p, points_)
+      for (ExactPoint& p : points_)
         p   += v;
       min_  += v;
       max_  += v;
@@ -218,7 +216,7 @@ namespace mml
     {
       const ExactVector& v = p - mean_;
 
-      mml_foreach (ExactPoint& p, points_)
+      for (ExactPoint& p : points_)
         p  += v;
       min_ += v;
       max_ += v;
@@ -230,7 +228,7 @@ namespace mml
     void
     Polygon<T>::scale(PrmReal s)
     {
-      mml_foreach (ExactPoint& p, points_)
+      for (ExactPoint& p : points_)
         p  = mean_ + (p    - mean_) * s;
       min_ = mean_ + (min_ - mean_) * s;
       max_ = mean_ + (max_ - mean_) * s;
@@ -244,7 +242,7 @@ namespace mml
     inline typename Polygon<T>::ExactLine
     Polygon<T>::e_to_l(ExactEdge const& e)
     {
-      return ExactLine(tools::first(e), tools::second(e));
+      return ExactLine(npl::first(e), npl::second(e));
     }
 
 

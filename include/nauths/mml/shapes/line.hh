@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -29,8 +29,8 @@ namespace mml
   namespace il
   {
 
-    // Line class
-
+    /// A 2D line. Being a shape, it is wrappable in a Shape
+    /// instance.
     template <typename T>
     class Line : public TypedShapeBase<Line<T>, T, shape::LINE>
     {
@@ -45,6 +45,7 @@ namespace mml
         typedef typename ExactShapeBase::ExactVector  ExactVector;
         typedef typename ExactShapeBase::ExactRect    ExactRect;
 
+        /// Internal coordinate array type.
         typedef boost::array<ExactPoint, 2> DataType;
 
 

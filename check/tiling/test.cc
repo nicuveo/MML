@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -40,13 +40,12 @@
                                                                 \
           std::set<Point, Less> points;                         \
                                                                 \
-          mml_foreach (const Shape& s, pt)                      \
+          for (const Shape& s : pt)                             \
             for (int dx = -1; dx <= 1; ++dx)                    \
               for (int dy = -1; dy <= 1; ++dy)                  \
               {                                                 \
                 Shape rs = s.moved_of(dx * dh + dy * dv);       \
-                mml_foreach (const Point& p,                    \
-                             rs.polygon().points())             \
+                for (const Point& p : rs.polygon().points())    \
                   points.insert(p);                             \
               }                                                 \
                                                                 \
@@ -70,7 +69,7 @@
                                                                 \
     for (it = tess.begin(false, true); it != tess.end(); ++it)  \
     {                                                           \
-      mml_foreach (const Tessellation::Link& nid, it.links())   \
+      for (const Tessellation::Link& nid : it.links())          \
       {                                                         \
         l[it.index()].push_back(nid.first);                     \
         l[nid.first].push_back(it.index());                     \

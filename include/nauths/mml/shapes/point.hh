@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -30,8 +30,9 @@ namespace mml
   namespace il
   {
 
-    // Point class
-
+    /// A 2D point / vector. Being a shape, it is wrappable in a Shape
+    /// instance. "Vector" is used as an alias for "Point" whenever it makes
+    /// more sense.
     template <typename T>
     class Point : public TypedShapeBase<Point<T>, T, shape::POINT>
     {
@@ -46,6 +47,7 @@ namespace mml
         typedef typename ExactShapeBase::ExactPoint   ExactPoint;
         typedef typename ExactShapeBase::ExactRect    ExactRect;
 
+        /// Internal coordinate array type.
         typedef boost::array<ValueType, 2> DataType;
 
 
@@ -58,7 +60,7 @@ namespace mml
         template <typename T2>
         Point(T2 const& x, T2 const& y);
         template <typename T2>
-        Point(const Point<T2>& p2);
+        Point(const Point<T2>& p);
 
 
         // accessors

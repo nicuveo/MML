@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -57,7 +57,7 @@ namespace mml
     public:
       typedef T ValueType;
       typedef U CoeffType;
-      typedef TOOLS_TPL_PRM(U) CoeffPrm;
+      typedef MML_TPL_PRM(U) CoeffPrm;
       typedef il::PerlinNoise<T, U> Noise;
       typedef il::PerlinNoiseSum<T, U> NoiseSum;
       typedef std::pair<Noise, U> WeightedNoise;
@@ -83,8 +83,8 @@ namespace mml
       public:
         typedef T ValueType;
         typedef U CoeffType;
-        typedef TOOLS_TPL_PRM(ValueType) ValuePrm;
-        typedef TOOLS_TPL_PRM(CoeffType) CoeffPrm;
+        typedef MML_TPL_PRM(ValueType) ValuePrm;
+        typedef MML_TPL_PRM(CoeffType) CoeffPrm;
         typedef Point<ValueType> ValuePoint;
         typedef Point<ValueType> ValueVector;
         typedef Point<CoeffType> CoeffPoint;
@@ -113,8 +113,8 @@ namespace mml
       public:
         typedef T ValueType;
         typedef U CoeffType;
-        typedef TOOLS_TPL_PRM(ValueType) ValuePrm;
-        typedef TOOLS_TPL_PRM(CoeffType) CoeffPrm;
+        typedef MML_TPL_PRM(ValueType) ValuePrm;
+        typedef MML_TPL_PRM(CoeffType) CoeffPrm;
         typedef Point<ValueType> ValuePoint;
         typedef Point<CoeffType> CoeffPoint;
         typedef typename perlin<T, U>::WeightedNoise WeightedNoise;

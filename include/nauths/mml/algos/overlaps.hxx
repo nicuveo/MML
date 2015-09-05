@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -159,7 +159,7 @@ namespace mml
     {
       if (contains(p, l[0]))
         return true;
-      mml_foreach (const Line<T1>& e, p.lines())
+      for (const Line<T1>& e : p.lines())
         if (il::lines_intersect(e, l))
           return true;
       return false;
@@ -202,7 +202,7 @@ namespace mml
     {
       if (contains(p, c.center()))
         return true;
-      mml_foreach (const Line<T1>& l, p.lines())
+      for (const Line<T1>& l : p.lines())
         if (overlaps(l, c))
           return true;
       return false;
@@ -217,7 +217,7 @@ namespace mml
             contains(p1, p2.points_data().front()))
           return true;
         else
-          mml_foreach (const Line<T2>& l, p2.lines())
+          for (const Line<T2>& l : p2.lines())
             if (overlaps(p1, l))
               return true;
       }

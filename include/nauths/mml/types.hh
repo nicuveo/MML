@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -16,7 +16,7 @@
 // Includes
 
 # include <cmath>
-# include "nauths/mml/lib/real.hh"
+# include <nauths/npl/real.hh>
 # include "nauths/mml/lib/template.hh"
 # include "nauths/mml/shapes/shape_macros.hh"
 
@@ -81,10 +81,10 @@ namespace mml
   typedef MML_NUM  Num;
   typedef MML_REAL Real;
 
-  typedef TOOLS_PRM(Num) PrmNum;
-  typedef TOOLS_REF(Num) RefNum;
-  typedef TOOLS_PRM(Real) PrmReal;
-  typedef TOOLS_REF(Real) RefReal;
+  typedef MML_PRM(Num) PrmNum;
+  typedef MML_REF(Num) RefNum;
+  typedef MML_PRM(Real) PrmReal;
+  typedef MML_REF(Real) RefReal;
 
   template <typename T, typename F> inline T to(F const& x) { return static_cast<T>(x); }
 
@@ -116,12 +116,12 @@ namespace mml
 #   define MML_THRESHOLD -6 // epsilon = 1E-6
 #  endif
 
-  template <> inline bool eq(Real const& x, Real const& y) { return eq<tools::Real<Real, MML_THRESHOLD> >(x, y); }
-  template <> inline bool ne(Real const& x, Real const& y) { return ne<tools::Real<Real, MML_THRESHOLD> >(x, y); }
-  template <> inline bool lt(Real const& x, Real const& y) { return lt<tools::Real<Real, MML_THRESHOLD> >(x, y); }
-  template <> inline bool le(Real const& x, Real const& y) { return le<tools::Real<Real, MML_THRESHOLD> >(x, y); }
-  template <> inline bool gt(Real const& x, Real const& y) { return gt<tools::Real<Real, MML_THRESHOLD> >(x, y); }
-  template <> inline bool ge(Real const& x, Real const& y) { return ge<tools::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool eq(Real const& x, Real const& y) { return eq<npl::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool ne(Real const& x, Real const& y) { return ne<npl::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool lt(Real const& x, Real const& y) { return lt<npl::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool le(Real const& x, Real const& y) { return le<npl::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool gt(Real const& x, Real const& y) { return gt<npl::Real<Real, MML_THRESHOLD> >(x, y); }
+  template <> inline bool ge(Real const& x, Real const& y) { return ge<npl::Real<Real, MML_THRESHOLD> >(x, y); }
 
 # endif
 

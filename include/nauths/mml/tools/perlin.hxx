@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -80,7 +80,7 @@ namespace mml
       Num n = (size + 1) * (size + 1);
       g_.resize(n);
 
-      mml_foreach (ValueVector& v, g_)
+      for (ValueVector& v : g_)
         v = random_vector<T>().normalized();
     }
 
@@ -172,7 +172,7 @@ namespace mml
       ValueType res = 0;
       CoeffType k = 0;
 
-      mml_foreach (const WeightedNoise& wpn, *this)
+      for (const WeightedNoise& wpn : *this)
       {
         res += to<ValueType>(wpn.second * wpn.first(x, y));
         k += wpn.second;

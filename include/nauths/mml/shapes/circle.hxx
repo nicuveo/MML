@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -33,34 +33,46 @@ namespace mml
 
     // constructors
 
+    /// Creates an invalid empty circle ((0, 0), 0).
     template <typename T>
     inline Circle<T>::Circle() throw()
       : radius_(0)
     {
     }
 
+    /// Creates a circle of given radius, centered on (0, 0).
     template <typename T>
     inline Circle<T>::Circle(PrmValueType radius) throw()
       : radius_(radius)
     {
     }
 
+    /// Creates a circle of given radius, centered on (cx, cy).
     template <typename T>
-    inline Circle<T>::Circle(PrmValueType cx, PrmValueType cy, PrmValueType radius)  throw()
+    inline Circle<T>::Circle(PrmValueType cx, PrmValueType cy, PrmValueType radius) throw()
       : center_(cx, cy), radius_(radius)
     {
     }
 
+    /// Creates a circle of given radius, centered on given center.
     template <typename T>
     inline Circle<T>::Circle(const ExactPoint& center, PrmValueType radius) throw()
       : center_(center), radius_(radius)
     {
     }
 
+    /// Creates a duplicate of circle c.
+    template <typename T>
+    inline Circle<T>::Circle(const Circle& c) throw()
+      : center_(c.center()), radius_(c.radius())
+    {
+    }
 
+
+    /// Creates a duplicate of circle c.
     template <typename T>
     template <typename T2>
-    Circle<T>::Circle(const Circle<T2>& c)
+    inline Circle<T>::Circle(const Circle<T2>& c) throw()
       : center_(c.center()), radius_(to<T>(c.radius()))
     {
     }
@@ -69,6 +81,7 @@ namespace mml
 
     // accessors
 
+    /// Returns a copy of the circle center point.
     template <typename T>
     inline typename Circle<T>::ExactPoint
     Circle<T>::center() const
@@ -76,6 +89,7 @@ namespace mml
       return center_;
     }
 
+    /// Returns the radius of the circle.
     template <typename T>
     inline typename Circle<T>::PrmValueType
     Circle<T>::radius() const
@@ -87,6 +101,7 @@ namespace mml
 
     // state
 
+    /// Returns whether the circle is valid (radius > 0).
     template <typename T>
     inline bool
     Circle<T>::valid() const
@@ -98,6 +113,7 @@ namespace mml
 
     // geometry
 
+    /// Returns a polygonal approximation of the circle (points number, angle of first).
     template <typename T>
     typename Circle<T>::ExactPolygon
     Circle<T>::polygonize(PrmNum pn, PrmReal a) const
@@ -116,6 +132,7 @@ namespace mml
     }
 
 
+    /// Returns the bounding square of the circle.
     template <typename T>
     inline typename Circle<T>::ExactRect
     Circle<T>::bounding_rect() const
@@ -124,6 +141,7 @@ namespace mml
                        center_ + ExactVector(radius_, radius_));
     }
 
+    /// Returns the perimeter of the circle.
     template <typename T>
     inline Real
     Circle<T>::perimeter() const
@@ -131,6 +149,7 @@ namespace mml
       return tau() * this->radius_;
     }
 
+    /// Returns the area of the circle.
     template <typename T>
     inline Real
     Circle<T>::area() const
@@ -142,6 +161,7 @@ namespace mml
 
     // mutators
 
+    /// Set the circle's center to c.
     template <typename T>
     inline void
     Circle<T>::set_center(const ExactPoint& c)
@@ -149,6 +169,7 @@ namespace mml
       center_ = c;
     }
 
+    /// Set the circle's radius to r (no check performed).
     template <typename T>
     inline void
     Circle<T>::set_radius(PrmValueType r)
@@ -161,6 +182,7 @@ namespace mml
 
     // in-place modifiers
 
+    /// Translates the shape of the given vector (in-place).
     template <typename T>
     inline void
     Circle<T>::move_of(const ExactVector& v)
@@ -168,6 +190,7 @@ namespace mml
       set_center(center_ + v);
     }
 
+    /// Moves the shape to the given point (in-place).
     template <typename T>
     inline void
     Circle<T>::move_to(const ExactPoint& p)
@@ -176,6 +199,7 @@ namespace mml
     }
 
 
+    /// Scales the circle by multiplying its radius.
     template <typename T>
     inline void
     Circle<T>::scale(PrmReal s)
@@ -187,6 +211,7 @@ namespace mml
 
     // comparison operators
 
+    /// Provides '==' equality comparison.
     template <typename T1, typename T2>
     inline bool
     operator==(const Circle<T1>& c1, const Circle<T2>& c2)
@@ -194,6 +219,7 @@ namespace mml
       return c1.center() == c2.center() and eq(c1.radius(), c2.radius());
     }
 
+    /// Provides '!=' inequality comparison.
     template <typename T1, typename T2>
     inline bool
     operator!=(const Circle<T1>& c1, const Circle<T2>& c2)

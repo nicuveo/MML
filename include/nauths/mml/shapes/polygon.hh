@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -16,8 +16,9 @@
 // Includes
 
 # include <vector>
+# include <functional>
+# include <nauths/npl/dual_iterator.hh>
 # include <boost/iterator/transform_iterator.hpp>
-# include "nauths/mml/lib/dual_iterator.hh"
 # include "nauths/mml/shapes/shape_base.hh"
 
 
@@ -38,6 +39,7 @@ namespace mml
         // types
 
         typedef ShapeBase<Polygon<T>, T> ExactShapeBase;
+
         typedef typename ExactShapeBase::ValueType    ValueType;
         typedef typename ExactShapeBase::PrmValueType PrmValueType;
         typedef typename ExactShapeBase::RefValueType RefValueType;
@@ -46,15 +48,16 @@ namespace mml
         typedef typename ExactShapeBase::ExactLine    ExactLine;
         typedef typename ExactShapeBase::ExactRect    ExactRect;
 
-        typedef std::vector<ExactPoint> ExactPoints;
-        typedef typename ExactPoints::size_type SizeType;
-        typedef typename tools::DualType<ExactPoints>::Type ExactEdge;
-        typedef typename ExactPoints::const_iterator PointIterator;
-        typedef tools::DualIterator<ExactPoints> EdgeIterator;
-        typedef boost::transform_iterator<ExactLine (*)(ExactEdge const&), EdgeIterator> LineIterator;
-        typedef std::pair<PointIterator, PointIterator> PointRange;
-        typedef std::pair<EdgeIterator, EdgeIterator> EdgeRange;
-        typedef std::pair<LineIterator, LineIterator> LineRange;
+        typedef std::vector<ExactPoint>                           ExactPoints;
+        typedef typename ExactPoints::size_type                   SizeType;
+        typedef typename npl::Dual<ExactPoints>::Type             ExactEdge;
+        typedef typename ExactPoints::const_iterator              PointIterator;
+        typedef npl::DualIterator<ExactPoints>                    EdgeIterator;
+        typedef std::function<ExactLine (ExactEdge const&)>       LineFunc;
+        typedef boost::transform_iterator<LineFunc, EdgeIterator> LineIterator;
+        typedef npl::Range<PointIterator>                         PointRange;
+        typedef npl::Range<EdgeIterator>                          EdgeRange;
+        typedef npl::Range<LineIterator>                          LineRange;
 
 
         // constructors

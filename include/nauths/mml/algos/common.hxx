@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -159,7 +159,7 @@ namespace mml
     bool
     polygon_contains_line(const Polygon<T1>& p, const Point<T2>& l0, const Point<T3>& l1)
     {
-      mml_foreach (const Line<T1>& e, p.lines())
+      for (const Line<T1>& e : p.lines())
       {
         Real n1;
         Real n2;

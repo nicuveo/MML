@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -29,6 +29,8 @@ namespace mml
   namespace il
   {
 
+    /// A 2D circle.
+    /// Being a shape, it is wrappable in a Shape instance.
     template <typename T>
     class Circle : public TypedShapeBase<Circle<T>, T, shape::CIRCLE>
     {
@@ -51,9 +53,10 @@ namespace mml
         explicit Circle(PrmValueType radius) throw();
         Circle(PrmValueType cx, PrmValueType cy, PrmValueType radius) throw();
         Circle(const ExactPoint& center, PrmValueType radius) throw();
+        Circle(const Circle& c) throw();
 
         template <typename T2>
-        Circle(const Circle<T2>&);
+        Circle(const Circle<T2>&) throw();
 
 
         // accessors

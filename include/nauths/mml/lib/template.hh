@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -7,8 +7,8 @@
 // mailto://antoine.jp.leblanc@gmail.com
 //
 
-#ifndef TOOLS_TEMPLATE_HH_
-# define TOOLS_TEMPLATE_HH_
+#ifndef MML_TEMPLATE_HH_
+# define MML_TEMPLATE_HH_
 
 
 
@@ -22,12 +22,12 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Macro helpers
 
-# define TOOLS_PRM(T)              boost::call_traits<T>::param_type
-# define TOOLS_TPL_PRM(T) typename boost::call_traits<T>::param_type
+# define MML_PRM(T)              boost::call_traits<T>::param_type
+# define MML_TPL_PRM(T) typename boost::call_traits<T>::param_type
 
-# define TOOLS_REF(T)              boost::call_traits<T>::reference
-# define TOOLS_TPL_REF(T) typename boost::call_traits<T>::reference
+# define MML_REF(T)              boost::call_traits<T>::reference
+# define MML_TPL_REF(T) typename boost::call_traits<T>::reference
 
 
 
-#endif /* !TOOLS_TEMPLATE_HH_ */
+#endif /* !MML_TEMPLATE_HH_ */

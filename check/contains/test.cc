@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -243,10 +243,10 @@ BOOST_AUTO_TEST_CASE(polygon_point)
   BOOST_CHECK_MESSAGE(mml::contains(o, P(4, 3)) == false, o << ",\t" << P(4, 3));
   BOOST_CHECK_MESSAGE(mml::contains(o, P(4, 4)) == false, o << ",\t" << P(4, 4));
 
-  mml_foreach (const Point& p, o.polygon().points())
+  for (const Point& p : o.polygon().points())
     BOOST_CHECK_MESSAGE(mml::contains(o, p) == true, o << ",\t" << p);
 
-  mml_foreach (const Line& l, o.polygon().lines())
+  for (const Line& l : o.polygon().lines())
     BOOST_CHECK_MESSAGE(mml::contains(o, l.center()) == true, o << ",\t" << l.center());
 
 #undef P

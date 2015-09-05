@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -32,6 +32,7 @@ namespace mml
 
     // constructors
 
+    /// Creates a (0, 0) point.
     template <typename T>
     inline Point<T>::Point() throw()
     {
@@ -39,6 +40,7 @@ namespace mml
       ry() = T();
     }
 
+    /// Creates a (x, y) point.
     template <typename T>
     inline Point<T>::Point(PrmValueType x, PrmValueType y) throw()
     {
@@ -46,6 +48,7 @@ namespace mml
       ry() = y;
     }
 
+    /// Creates a duplicate of point p.
     template <typename T>
     inline Point<T>::Point(const Point& p) throw()
     {
@@ -54,6 +57,7 @@ namespace mml
     }
 
 
+    /// Creates a (x, y) point.
     template <typename T>
     template <typename T2>
     inline Point<T>::Point(T2 const& x, T2 const& y)
@@ -62,18 +66,20 @@ namespace mml
       ry() = to<ValueType>(y);
     }
 
+    /// Creates a duplicate of point p.
     template <typename T>
     template <typename T2>
-    inline Point<T>::Point(const Point<T2>& p2)
+    inline Point<T>::Point(const Point<T2>& p)
     {
-      rx() = to<ValueType>(p2.x());
-      ry() = to<ValueType>(p2.y());
+      rx() = to<ValueType>(p.x());
+      ry() = to<ValueType>(p.y());
     }
 
 
 
     // accessors
 
+    /// Provides a const reference to the underlying coordinates array.
     template <typename T>
     inline typename Point<T>::DataType const&
     Point<T>::data() const
@@ -81,6 +87,7 @@ namespace mml
       return c_;
     }
 
+    /// Returns the x coordinate of the point.
     template <typename T>
     inline typename Point<T>::PrmValueType
     Point<T>::x() const
@@ -88,6 +95,7 @@ namespace mml
       return c_[0];
     }
 
+    /// Returns the y coordinate of the point.
     template <typename T>
     inline typename Point<T>::PrmValueType
     Point<T>::y() const
@@ -95,6 +103,7 @@ namespace mml
       return c_[1];
     }
 
+    /// Returns a mutable ref to the x coordinate of the point.
     template <typename T>
     inline typename Point<T>::RefValueType
     Point<T>::rx()
@@ -102,6 +111,7 @@ namespace mml
       return c_[0];
     }
 
+    /// Returns a mutable ref to the y coordinate of the point.
     template <typename T>
     inline typename Point<T>::RefValueType
     Point<T>::ry()
@@ -113,12 +123,14 @@ namespace mml
 
     // access operators
 
+    /// Automagically casts the point into a const coordinate array.
     template <typename T>
     inline Point<T>::operator const DataType& () const
     {
       return c_;
     }
 
+    /// Automagically casts the point into a coordinate array.
     template <typename T>
     inline Point<T>::operator DataType& ()
     {
@@ -126,6 +138,7 @@ namespace mml
     }
 
 
+    /// Returns the coordinate of index i (no checks performed).
     template <typename T>
     inline typename Point<T>::PrmValueType
     Point<T>::operator[](std::size_t i) const
@@ -133,6 +146,7 @@ namespace mml
       return c_[i];
     }
 
+    /// Returns the coordinate of index i (no checks performed).
     template <typename T>
     inline typename Point<T>::RefValueType
     Point<T>::operator[](std::size_t i)
@@ -144,6 +158,7 @@ namespace mml
 
     // state
 
+    /// Returns whether the point is valid (i.e. no coordinate is NaN).
     template <typename T>
     inline bool
     Point<T>::valid() const
@@ -155,6 +170,7 @@ namespace mml
 
     // geometry
 
+    /// Computes the length of the corresponding (x, y) vector.
     template <typename T>
     inline Real
     Point<T>::length() const
@@ -165,6 +181,7 @@ namespace mml
       return std::sqrt(rx * rx + ry * ry);
     }
 
+    /// Computes the squared length of the corresponding (x, y) vector.
     template <typename T>
     inline typename Point<T>::ValueType
     Point<T>::sqr_length() const
@@ -172,7 +189,7 @@ namespace mml
       return x() * x() + y() * y();
     }
 
-
+    /// Creates a Rect whose corners all are this point.
     template <typename T>
     inline typename Point<T>::ExactRect
     Point<T>::bounding_rect() const
@@ -180,6 +197,7 @@ namespace mml
       return ExactRect(*this, *this);
     }
 
+    /// Returns a copy of the point itself.
     template <typename T>
     inline typename Point<T>::ExactPoint
     Point<T>::center() const
@@ -187,6 +205,7 @@ namespace mml
       return *this;
     }
 
+    /// Returns 0.
     template <typename T>
     inline Real
     Point<T>::perimeter() const
@@ -194,6 +213,7 @@ namespace mml
       return 0;
     }
 
+    /// Returns 0.
     template <typename T>
     inline Real
     Point<T>::area() const
@@ -205,6 +225,7 @@ namespace mml
 
     // modifiers
 
+    /// Duplicates the vector and normalizes it.
     template <typename T>
     inline Point<T>
     Point<T>::normalized() const
@@ -212,6 +233,7 @@ namespace mml
       return (*this) / length();
     }
 
+    /// Creates a new vector that holds the non-normalized normal vector of this one.
     template <typename T>
     inline Point<T>
     Point<T>::normal() const
@@ -223,6 +245,7 @@ namespace mml
 
     // modification operators
 
+    /// Creates a new point with opposite coordinates.
     template <typename T>
     inline Point<T>
     Point<T>::operator-() const
@@ -234,6 +257,7 @@ namespace mml
 
     // in-place modifiers
 
+    /// Normalizes the vector (in-place).
     template <typename T>
     inline void
     Point<T>::normalize()
@@ -242,6 +266,7 @@ namespace mml
     }
 
 
+    /// Translates the shape of the given vector (in-place).
     template <typename T>
     inline void
     Point<T>::move_of(const ExactVector& v)
@@ -249,6 +274,7 @@ namespace mml
       (*this) += v;
     }
 
+    /// Moves the shape to the given point (in-place).
     template <typename T>
     inline void
     Point<T>::move_to(const ExactPoint& p)
@@ -257,6 +283,7 @@ namespace mml
     }
 
 
+    /// Scales the vector of the given ratio (in-place).
     template <typename T>
     inline void
     Point<T>::scale(PrmReal s)
@@ -268,6 +295,7 @@ namespace mml
 
     // in-place modification operators
 
+    /// Sums the coordinates (in-place).
     template <typename T>
     template <typename T2>
     inline Point<T>& Point<T>::operator+=(const Point<T2>& p)
@@ -277,6 +305,7 @@ namespace mml
       return *this;
     }
 
+    /// Computes the difference of the coordinates (in-place).
     template <typename T>
     template <typename T2>
     inline Point<T>& Point<T>::operator-=(const Point<T2>& p)
@@ -286,6 +315,7 @@ namespace mml
       return *this;
     }
 
+    /// Scales the vector (in-place).
     template <typename T>
     template <typename S>
     inline Point<T>& Point<T>::operator*=(S const& s)
@@ -295,6 +325,7 @@ namespace mml
       return *this;
     }
 
+    /// Scales the vector (in-place).
     template <typename T>
     template <typename S>
     inline Point<T>& Point<T>::operator/=(S const& s)
@@ -304,6 +335,7 @@ namespace mml
       return *this;
     }
 
+    /// Computes the modulo of the coordinates (in-place).
     template <typename T>
     template <typename S>
     inline Point<T>& Point<T>::operator%=(S const& s)

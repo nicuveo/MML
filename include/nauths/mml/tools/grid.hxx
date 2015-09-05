@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -32,7 +32,7 @@
       if (type c = cell(KeyPoint(x, y)))                \
 
 # define MML_GRID_FILTER(cell, test, todo)      \
-  mml_foreach (Value const& value, *cell)       \
+  for (Value const& value : *cell)              \
   if (test)                                     \
   {                                             \
     todo;                                       \

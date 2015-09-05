@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -200,7 +200,7 @@ int main()
   Bitmap res = populate();
 
 
-  mml_foreach (const Point& p, draw.polygon().points_data())
+  for (const Point& p : draw.polygon().points_data())
     draw_point(res, p, Color::white);
   draw_point(res, REF.center(), Color::white);
 

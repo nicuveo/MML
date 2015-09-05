@@ -11,8 +11,8 @@ prefix: /usr/local
 
 ## Defaults
 CC	  = g++
-CFLAGS	  = -W -Wall -Wextra -ansi -pedantic -I include -DMML_STATIC_CHECKING
-DFLAGS    = -O0 -g3 -ggdb3 -DDEBUG
+CFLAGS	  = -std=c++11 -W -Wall -Wextra -pedantic -I include
+DFLAGS    = -O0 -g3 -ggdb3 -DDEBUG -DMML_STATIC_CHECKING
 RFLAGS    = -O3 -DNDEBUG
 LDFLAGS   =
 TARGETS   =

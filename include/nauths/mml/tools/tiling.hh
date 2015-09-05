@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -113,12 +113,12 @@ namespace mml
       typedef std::vector<Link>           Links;
       typedef boost::unordered_map<I, I>  IndexMap;
       typedef boost::shared_ptr<IndexMap> IndexMapPtr;
-      typedef TOOLS_TPL_PRM(IndexType)    IndexPrm;
-      typedef TOOLS_TPL_REF(IndexType)    IndexRef;
-      typedef TOOLS_TPL_PRM(IndexPair)    IndexPairPrm;
-      typedef TOOLS_TPL_REF(IndexPair)    IndexPairRef;
-      typedef TOOLS_TPL_PRM(IndexMap)     IndexMapPrm;
-      typedef TOOLS_TPL_PRM(E1Value)      E1Prm;
+      typedef MML_TPL_PRM(IndexType)      IndexPrm;
+      typedef MML_TPL_REF(IndexType)      IndexRef;
+      typedef MML_TPL_PRM(IndexPair)      IndexPairPrm;
+      typedef MML_TPL_REF(IndexPair)      IndexPairRef;
+      typedef MML_TPL_PRM(IndexMap)       IndexMapPrm;
+      typedef MML_TPL_PRM(E1Value)        E1Prm;
 
 
       // internal iterator type

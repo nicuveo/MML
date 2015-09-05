@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -262,40 +262,25 @@ namespace
 
       switch ((it.index() / (tess.pattern().size())) % 6)
       {
-        case  0: c = Color::rgb(  0,   0, 200); break;
-        case  1: c = Color::rgb(  0, 200,   0); break;
-        case  2: c = Color::rgb(  0, 200, 200); break;
-        case  3: c = Color::rgb(200,   0,   0); break;
-        case  4: c = Color::rgb(200,   0, 200); break;
-        case  5: c = Color::rgb(200, 200,   0); break;
+        case  0: c = Color::rgb(  0,   0, 220); break;
+        case  1: c = Color::rgb(  0, 220,   0); break;
+        case  2: c = Color::rgb(  0, 220, 220); break;
+        case  3: c = Color::rgb(220,   0,   0); break;
+        case  4: c = Color::rgb(220,   0, 220); break;
+        case  5: c = Color::rgb(220, 220,   0); break;
       }
 
       int i = (it.index() % tess.pattern().size()) + 1;
       c = mul(c, 0.4 + 0.6 * (i / float(tess.pattern().size())));
 
-      switch (m)
-      {
-        case 0:
-        case 4:
-        {
-          draw_shape(res, *it, c);
-          break;
-        }
+      if (m == 0 or m == 4)
+        draw_shape(res, *it, c);
 
-        case 1:
-        case 3:
-        case 5:
-        {
-          mml_foreach (const Line& l, it->polygon().lines())
-            draw_line(res, l, Color::white, 1);
-          break;
-        }
+      if (m == 0 or m == 1 or m == 3 or m == 5)
+        for (const Line& l : it->polygon().lines())
+          draw_line(res, l, Color::white, 1);
 
-        default:
-          break;
-      }
-
-      mml_foreach (const Tessellation::Link& nid, it.links())
+      for (const Tessellation::Link& nid : it.links())
       {
         if (links_ref.find(nid.first) != links_ref.end())
         {
@@ -351,7 +336,7 @@ namespace
         break;
 
       default:
-        // mml_foreach (const Point& p, draw.polygon().points_data())
+        // for (const Point& p : draw.polygon().points_data())
         //   draw_point(res, p, Color::white);
         // draw_point(res, REF.center(), Color::white);
         break;

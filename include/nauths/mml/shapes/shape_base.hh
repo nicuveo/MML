@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -50,31 +50,31 @@ namespace mml
   namespace il
   {
 
-    // ShapeCommonBase
-    //   Non-template common base to all shapes, used as a flag to identify
-    //   shapes, as for all shape S `boost::is_base_of<ShapeCommonBase, S>` is
-    //   true. This is typically used with ̀boost::enable_if`.
-
+    /// Non-template common base to all shapes, used as a flag to identify
+    /// shapes, as for all shape S, `boost::is_base_of<ShapeCommonBase, S>` is
+    /// true. This is typically used with `boost::enable_if`.
     class ShapeCommonBase
     {
     };
 
 
-    // ShapeBase
-    //   Template base class for shapes; does typedefs and virtual method
-    //   declarations. Those virtual methods are not used; in fact, by default,
-    //   they aren't even declared, as the mml always manipulates exact types.
-
+    /// Template base class for shapes; does typedefs and virtual method
+    /// declarations. Those virtual methods are not used; in fact, by default,
+    /// they aren't even declared, as the mml always manipulates exact types.
     template <typename E, typename T>
     class ShapeBase : public ShapeCommonBase
     {
       public:
         // types
 
+        /// Coordinate type
         typedef T ValueType;
+        /// Exact type (CRTP).
         typedef E ExactType;
-        typedef TOOLS_TPL_PRM(ValueType) PrmValueType;
-        typedef TOOLS_TPL_REF(ValueType) RefValueType;
+        /// Coordinate parameter type.
+        typedef MML_TPL_PRM(ValueType) PrmValueType;
+        /// Coordinate reference type.
+        typedef MML_TPL_REF(ValueType) RefValueType;
         BOOST_PP_SEQ_FOR_EACH(MMLM_exact, T, MMLM_SHAPES)
         typedef Point<T>   ExactVector;
         typedef Shape<T>   ExactShape;
@@ -129,10 +129,8 @@ namespace mml
     };
 
 
-    // TypedShapeBase
-    //   A simple "overlay" of ShapeBase, but with knowledge of the exact
-    //   ShapeType (using CRTP).
-
+    /// Internal intermediary type, over ShapeBase.
+    /// It knows the exact ShapeType via CRTP.
     template <typename E, typename T, ShapeType Type>
     class TypedShapeBase : public ShapeBase<E, T>
     {

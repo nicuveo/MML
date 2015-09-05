@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2013
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -53,8 +53,8 @@ namespace
   common_line(const Polygon& p1, const Polygon& p2)
   {
     // ugly
-    mml_foreach (const Line& l1, p1.lines())
-      mml_foreach (const Line& l2, p2.lines())
+    for (const Line& l1 : p1.lines())
+      for (const Line& l2 : p2.lines())
         if (oriented(l1) == oriented(l2))
           return oriented(l1);
     BOOST_CHECK(false);
@@ -96,7 +96,7 @@ namespace
     for (it = tess.begin(false, true); it != tess.end(); ++it)
     {
       m[it.index()] = *it;
-      mml_foreach (const Tessellation::Link& nid, it.links())
+      for (const Tessellation::Link& nid : it.links())
       {
         ShapeMap::iterator it2 = m.find(nid.first);
         if (it2 != m.end())

@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -30,6 +30,9 @@ namespace mml
 
     // FIXME debug::empty raise errors on calls to Empty methods?
 
+    /// An empty shape.
+    /// This is but a placeholder, used to signal the lack of a shape
+    /// rather than a specific one.
     template <typename T>
     class Empty : public TypedShapeBase<Empty<T>, T, shape::EMPTY>
     {

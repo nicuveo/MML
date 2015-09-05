@@ -1,5 +1,5 @@
 //
-// Copyright Antoine Leblanc 2010 - 2014
+// Copyright Antoine Leblanc 2010 - 2015
 // Distributed under the MIT license.
 //
 // http://nauths.fr
@@ -29,6 +29,7 @@ namespace mml
   {
 
 
+    /// Checks whether this shape is the empty shape.
     template <typename E, typename T>
     inline bool
     ShapeBase<E, T>::empty() const
@@ -37,6 +38,7 @@ namespace mml
     }
 
 
+    /// Duplicates the shape and translates it of the given vector values.
     template <typename E, typename T>
     inline typename ShapeBase<E, T>::ExactType
     ShapeBase<E, T>::moved_of(PrmValueType x, PrmValueType y) const
@@ -44,6 +46,7 @@ namespace mml
       return moved_of(ExactVector(x, y));
     }
 
+    /// Duplicates the shape and moves it to the given point.
     template <typename E, typename T>
     inline typename ShapeBase<E, T>::ExactType
     ShapeBase<E, T>::moved_to(PrmValueType x, PrmValueType y) const
@@ -52,6 +55,7 @@ namespace mml
     }
 
 
+    /// Duplicates the shape and translates it of the given vector.
     template <typename E, typename T>
     inline typename ShapeBase<E, T>::ExactType
     ShapeBase<E, T>::moved_of(const ExactVector& v) const
@@ -61,6 +65,7 @@ namespace mml
       return res;
     }
 
+    /// Duplicates the shape and moves it to the given point.
     template <typename E, typename T>
     inline typename ShapeBase<E, T>::ExactType
     ShapeBase<E, T>::moved_to(const ExactPoint& p) const
@@ -71,6 +76,7 @@ namespace mml
     }
 
 
+    /// Duplicates the shape and scales it of the given ratio.
     template <typename E, typename T>
     inline typename ShapeBase<E, T>::ExactType
     ShapeBase<E, T>::scaled(PrmReal r) const
@@ -81,6 +87,7 @@ namespace mml
     }
 
 
+    /// Translates the shape of the given vector (in-place).
     template <typename E, typename T>
     inline void
     ShapeBase<E, T>::move_of(PrmValueType x, PrmValueType y)
@@ -88,6 +95,7 @@ namespace mml
       static_cast<ExactType*>(this)->move_of(ExactVector(x, y));
     }
 
+    /// Moves the shape to the given point (in-place).
     template <typename E, typename T>
     inline void
     ShapeBase<E, T>::move_to(PrmValueType x, PrmValueType y)
@@ -96,6 +104,7 @@ namespace mml
     }
 
 
+    /// Returns the shape's exact type (CRTP).
     template <typename E, typename T, ShapeType Type>
     inline ShapeType
     TypedShapeBase<E, T, Type>::shape_type()
@@ -103,6 +112,7 @@ namespace mml
       return Type;
     }
 
+    /// Returns this shape's exact type (CRTP).
     template <typename E, typename T, ShapeType Type>
     inline ShapeType
     TypedShapeBase<E, T, Type>::type() const
