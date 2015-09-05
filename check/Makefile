@@ -1,8 +1,3 @@
-##
-## Makefile for mml
-## Made by nicuveo <crucuny@gmail.com>
-##
-
 include Makefile.rules
 
 

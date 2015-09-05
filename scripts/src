@@ -3,4 +3,4 @@
 BDIR=`dirname $0`/..
 cd $BDIR
 
-find include src \! -path ".*svn.*" -regex ".*\.\(hh\|hxx\|cc\)" 2> /dev/null | sort -u
+find include src \! -path ".*svn.*" -regex ".*\.\(h\|hh\|hxx\|cc\)$" 2> /dev/null | sort -u
