@@ -132,7 +132,7 @@ namespace mml
   std::vector<typename Grid<S, T, F>::iterator>
   Grid<S, T, F>::find_all(const Shape<T2>& s) const
   {
-    boost::unordered_set<Value> visited;
+    std::unordered_set<Value> visited;
 
     std::vector<iterator> res;
     MML_GRID_CONST_FOR(T2, s)

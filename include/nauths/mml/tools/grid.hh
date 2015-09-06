@@ -17,8 +17,7 @@
 
 # include <list>
 # include <vector>
-# include <boost/function.hpp>
-# include <boost/unordered_set.hpp>
+# include <unordered_set>
 # include "nauths/mml/shapes.hh"
 
 
@@ -29,7 +28,7 @@
 namespace mml
 {
 
-  template <typename S, typename T, typename F = boost::function1<Shape<T>, S const&> >
+  template <typename S, typename T, typename F = std::function<Shape<T> (S const&)> >
   class Grid
   {
     public:
