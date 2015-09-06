@@ -15,7 +15,7 @@
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Includes
 
-# include <boost/shared_ptr.hpp>
+# include <memory>
 # include <boost/unordered_map.hpp>
 # include <boost/iterator/iterator_facade.hpp>
 # include "nauths/mml/shapes.hh"
@@ -112,7 +112,7 @@ namespace mml
       typedef std::pair<I, Real>          Link;
       typedef std::vector<Link>           Links;
       typedef boost::unordered_map<I, I>  IndexMap;
-      typedef boost::shared_ptr<IndexMap> IndexMapPtr;
+      typedef std::shared_ptr<IndexMap>   IndexMapPtr;
       typedef MML_TPL_PRM(IndexType)      IndexPrm;
       typedef MML_TPL_REF(IndexType)      IndexRef;
       typedef MML_TPL_PRM(IndexPair)      IndexPairPrm;
@@ -151,7 +151,7 @@ namespace mml
           IndexPair index_;
           const Tessellation* tess_;
           Links links_;
-          boost::shared_ptr<IndexMap> index_map_;
+          IndexMapPtr index_map_;
       };
 
 
