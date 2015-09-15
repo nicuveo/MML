@@ -1,5 +1,0 @@
-## configure.in
-## Made by nicuveo for mml
-
-CFIL = intersect_test.cc ../common/img/bitmap.cc ../common/img/color.cc ../common/img/io/tga.cc
-CFLAGS += -I../../include -I../common

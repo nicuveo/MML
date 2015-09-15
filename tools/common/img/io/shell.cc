@@ -65,31 +65,26 @@ namespace
 namespace tools
 {
 
-  namespace img
+
+  template <typename T>
+  void
+  Shell<T>::read(std::istream&)
   {
+    throw std::logic_error("not implemented yet");
+  }
 
+  template <typename T>
+  void
+  Shell<T>::write(std::ostream& ostr) const
+  {
+    const Bitmap& img = this->img_;
 
-    template <typename T>
-    void
-    Shell<T>::read(std::istream&)
+    for (Bitmap::size_type y = 0; y < img.height(); ++y)
     {
-      throw std::logic_error("not implemented yet");
+      for (Bitmap::size_type x = 0; x < img.width(); ++x)
+        ostr << c(img.at(x, y));
+      ostr << std::endl;
     }
-
-    template <typename T>
-    void
-    Shell<T>::write(std::ostream& ostr) const
-    {
-      const Bitmap& img = this->img_;
-
-      for (Bitmap::size_type y = 0; y < img.height(); ++y)
-      {
-        for (Bitmap::size_type x = 0; x < img.width(); ++x)
-          ostr << c(img.at(x, y));
-        ostr << std::endl;
-      }
-    }
-
   }
 
 
@@ -100,5 +95,5 @@ namespace tools
 //HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 // Instantiation
 
-template class tools::img::Shell<tools::img::Bitmap&>;
-template class tools::img::Shell<tools::img::Bitmap const&>;
+template class tools::Shell<tools::Bitmap&>;
+template class tools::Shell<tools::Bitmap const&>;

@@ -25,26 +25,21 @@
 namespace tools
 {
 
-  namespace img
+  template <typename T>
+  class Shell : public ImgIO<T>
   {
+    public:
+      Shell(T b)
+        : ImgIO<T>(b)
+      {
+      }
 
-    template <typename T>
-    class Shell : public ImgIO<T>
-    {
-      public:
-        Shell(T b)
-          : ImgIO<T>(b)
-        {
-        }
+      void read(std::istream&);
+      void write(std::ostream&) const;
+  };
 
-        void read(std::istream&);
-        void write(std::ostream&) const;
-    };
-
-  }
-
-  inline img::Shell<Bitmap&>       shell(Bitmap& b)       { return img::Shell<Bitmap&>(b);       }
-  inline img::Shell<Bitmap const&> shell(Bitmap const& b) { return img::Shell<Bitmap const&>(b); }
+  inline Shell<Bitmap&>       shell(Bitmap& b)       { return Shell<Bitmap&>(b);       }
+  inline Shell<Bitmap const&> shell(Bitmap const& b) { return Shell<Bitmap const&>(b); }
 
 }
 

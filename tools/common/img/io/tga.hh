@@ -25,26 +25,21 @@
 namespace tools
 {
 
-  namespace img
+  template <typename T>
+  class Tga : public ImgIO<T>
   {
+    public:
+      Tga(T b)
+        : ImgIO<T>(b)
+      {
+      }
 
-    template <typename T>
-    class Tga : public ImgIO<T>
-    {
-      public:
-        Tga(T b)
-          : ImgIO<T>(b)
-        {
-        }
+      void read(std::istream&);
+      void write(std::ostream&) const;
+  };
 
-        void read(std::istream&);
-        void write(std::ostream&) const;
-    };
-
-  }
-
-  inline img::Tga<Bitmap&>       tga(Bitmap& b)       { return img::Tga<Bitmap&>(b);       }
-  inline img::Tga<Bitmap const&> tga(Bitmap const& b) { return img::Tga<Bitmap const&>(b); }
+  inline Tga<Bitmap&>       tga(Bitmap& b)       { return Tga<Bitmap&>(b);       }
+  inline Tga<Bitmap const&> tga(Bitmap const& b) { return Tga<Bitmap const&>(b); }
 
 }
 
