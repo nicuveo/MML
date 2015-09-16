@@ -34,15 +34,17 @@ file(GLOB_RECURSE TILING_DEBUG_FILES   tools/tiling_debug/*.cc   tools/common/*.
 file(GLOB_RECURSE TILING_TEST_FILES    tools/tiling_test/*.cc    tools/common/*.cc)
 file(GLOB_RECURSE TGA_TEST_FILES       tools/tga_test/*.cc       tools/common/*.cc)
 
-add_executable(intersect_test ${INTERSECT_TEST_FILES})
-add_executable(tiling_debug   ${TILING_DEBUG_FILES})
-add_executable(tiling_test    ${TILING_TEST_FILES})
-add_executable(tga_test       ${TGA_TEST_FILES})
+add_executable(intersect_test EXCLUDE_FROM_ALL ${INTERSECT_TEST_FILES})
+add_executable(tiling_debug   EXCLUDE_FROM_ALL ${TILING_DEBUG_FILES})
+add_executable(tiling_test    EXCLUDE_FROM_ALL ${TILING_TEST_FILES})
+add_executable(tga_test       EXCLUDE_FROM_ALL ${TGA_TEST_FILES})
 
 target_include_directories(intersect_test PRIVATE tools/common)
 target_include_directories(tiling_debug   PRIVATE tools/common)
 target_include_directories(tiling_test    PRIVATE tools/common)
 target_include_directories(tga_test       PRIVATE tools/common)
+
+add_custom_target(tools DEPENDS intersect_test tiling_debug tiling_test tga_test)
 
 
 
