@@ -50,14 +50,17 @@ add_custom_target(tools DEPENDS intersect_test tiling_debug tiling_test tga_test
 
 # tests
 
-file(GLOB_RECURSE TESTFILES check/*.cc)
-file(GLOB_RECURSE ANAFILES  src/* include/*)
-add_executable(tests ${TESTFILES})
-target_link_libraries(tests --coverage)
+file(GLOB_RECURSE TESTFILES1 check/main.cc check/general/*.cc)
+file(GLOB_RECURSE TESTFILES2 check/main.cc check/extra/*.cc)
+file(GLOB_RECURSE ANAFILES   src/* include/*)
+add_executable(tests       ${TESTFILES1})
+add_executable(tests_extra ${TESTFILES2})
+target_link_libraries(tests       --coverage)
+target_link_libraries(tests_extra --coverage)
 
 add_custom_target(run_tests
-    COMMAND ./tests
-    DEPENDS tests
+    COMMAND ./tests && ./tests_extra
+    DEPENDS tests tests_extra
     COMMENT "running tests")
 
 add_custom_target(run_analysis
