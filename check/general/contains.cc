@@ -185,6 +185,23 @@ BOOST_AUTO_TEST_CASE(circle_point)
                           c << ", " << Point(x, y));
 }
 
+BOOST_AUTO_TEST_CASE(circle_rect)
+{
+  auto c  = Shape::circle(0, 0, 10);
+  auto r0 = Shape::rect(-7, -7, 7, 7);
+  auto r1 = Shape::rect(-8, -8, 8, 8);
+  auto r2 = Shape::rect(-8, -8, 1, 1);
+  auto r3 = Shape::rect(-8, -1, 1, 8);
+  auto r4 = Shape::rect(-1, -1, 8, 8);
+  auto r5 = Shape::rect(-1, -8, 8, 1);
+  BOOST_CHECK_MESSAGE(    mml::contains(c, r0), c << ", " << r0);
+  BOOST_CHECK_MESSAGE(not mml::contains(c, r1), c << ", " << r1);
+  BOOST_CHECK_MESSAGE(not mml::contains(c, r2), c << ", " << r2);
+  BOOST_CHECK_MESSAGE(not mml::contains(c, r3), c << ", " << r3);
+  BOOST_CHECK_MESSAGE(not mml::contains(c, r4), c << ", " << r4);
+  BOOST_CHECK_MESSAGE(not mml::contains(c, r5), c << ", " << r5);
+}
+
 BOOST_AUTO_TEST_CASE(circle_circle)
 {
   static const int pb = -10;
