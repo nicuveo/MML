@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/nicuveo/MML.svg?branch=master)](https://travis-ci.org/nicuveo/MML)
+[![Coverage Status](https://coveralls.io/repos/nicuveo/MML/badge.svg?branch=master&service=github)](https://coveralls.io/github/nicuveo/MML?branch=master)
+
 *MML*: a Minimalistic Maths Library
 ===================================
 
